@@ -1,0 +1,363 @@
+species,barcode,collector_number,plant_height,sla,seed_weight
+albicans,upcb0015814,Grava_04,na,4.40,0.40
+albicans,upcb0029734,Nunes_upcb0029734,na,5.50,0.68
+albicans,upcb0015802,Sobral_10209,4.5,5.24,0.65
+albicans,upcb0031843,Silva_3025,2.5,11.43,0.75
+albicans,upcb0015799,Haas_106,na,na,na
+albicans,upcb0042394,Faria_26,na,11.00,na
+albicans,upcb0015808,Gatti_37,0.7,4.40,na
+albicans,upcb0015813,Hatschbach_69569,1.5,3.60,na
+alborufescens,upcb0032071,Martinelli_18844,4.8,3.71,0.67
+alborufescens,upcb0016680,Pirani_sn,1.3,4.85,1.00
+alborufescens,upcb0030623,Silva_6161,na,na,na
+alborufescens,upcb0016682,Zappi_upcb0016682,1,4.50,na
+alborufescens,upcb0016589,Cavalcanti_upcb0016589,1.2,5.28,na
+alborufescens,upcb0016604,Nogueira_upcb0016604,1,5.09,na
+amnicola,ny03241423,McDaniel_25790,6,9.00,1.00
+amnicola,ny03241422,Rimachi_10915,2,11.00,0.83
+amnicola,ny01539047,Zuleta_225,15,7.15,20.67
+amnicola,ny01796268,Schunke_158,3,11.00,na
+amnicola,ny01796267,Little_9683,6,12.00,na
+argyrophylla,upcb0016548,Goldenberg_1927,5,10.50,1.53
+argyrophylla,ny03697928,Vasquez_26239,7,6.92,0.81
+argyrophylla,ny00987108,Rosa_1619,3,7.33,1.03
+argyrophylla,ny1653306,Claire_447,na,6.00,0.40
+argyrophylla,upcb0016556,CarvalhoSobrinho_1653,2.5,13.00,na
+argyrophylla,upcb0016555,Hatschbach_11366,na,9.71,na
+argyrophylla,ny1653013,Cotton_1566,5.5,8.00,na
+argyrophylla,ny00987126,Rosa_4330,10,10.08,na
+argyrophylla,ny03908005,Gonzales_1186,9,10.00,na
+atlantica,ny1738447,Caddah_866,4,11.20,6.67
+atlantica,ny02647874,Braga_1257,3,13.75,10.00
+baumgratziana,upcb0016666,Souza_33527,2,7.50,3.00
+baumgratziana,upcb0016660,Almeda_9738,5,8.67,0.86
+budlejoides,flor0055948 ,Bandeira_212,8,11.00,2.27
+budlejoides,upcb0016735,Matos_208,3,13.50,2.70
+budlejoides,upcb0016754,Goldenberg_2131,8,13.20,2.00
+budlejoides,upcb0016758,Kollmann_12227,6,10.50,2.50
+budlejoides,upcb0016747,Torres_755,2.3,11.00,na
+budlejoides,flor0018792 ,Bresolin_954,8,8.25,na
+budlejoides,upcb0016817,Valente_420,na,11.09,na
+burchellii,ny00916910,Munhoz_2,5,4.77,0.31
+burchellii,ny01795754,Labiak_5278,1,5.03,0.37
+burchellii,ny00748865,Anderson_7394,3.5,7.70,0.38
+burchellii,ny01019039,Delprete_8968,3,6.50,na
+burchellii,ny00916913,Santose_24278,na,5.26,na
+burchellii,ny00748864,Filgueiras_3088,3,6.88,na
+castaneiflora,ny04218421,Almeda_9783,4,16.88,2.17
+castaneiflora,ny00521283,Brade_17180,na,24.00,4.00
+castaneiflora,ny01462497,Caddah_447,3,18.67,4.00
+castaneiflora,ny00521282,Altamiro_63,na,15.00,na
+castaneiflora,ny01081547,Jung_372,na,19.80,na
+chrysophylla,ny00987281,Amaral_76,6,11.00,1.25
+chrysophylla,ny01796310,Prance_8487,12,9.09,3.33
+chrysophylla,ny00755181,Ehringhaus_594,10,10.00,2.67
+chrysophylla,ny00916992,Berg_p18509,5,13.72,1.00
+chrysophylla,ny00987308,Silva_25155,3,9.33,3.00
+chrysophylla,ny1599089,Solomon_14803,10,9.75,2.67
+chrysophylla,ny03270890,Lanjouw_1272,10,8.21,1.80
+chrysophylla,ny00521282,Valenzuela_9953,30,14.63,na
+chrysophylla,ny????,Krukoff_10938,6,11.67,na
+chrysophylla,ny01176800,Plowman_12292,10,14.00,na
+chrysophylla,ny00987280,Silva_1335,12,6.46,na
+chrysophylla,ny00987000,Pires_4397,6,10.00,na
+cinerascens,flor0000800,Reitz_14887,2,10.00,4.67
+cinerascens,flor0005123 ,Sohn_25,na,12.00,3.25
+cinerascens,flor????,Wasum_743,na,12.57,3.33
+cinerascens,flor0008796,Falkenberg_1353,3,11.00,2.83
+cinerascens,flor0019567,Sobral_2223,1.2,12.00,2.00
+cinerascens,flor0015824,Falkenberg_3399,4,9.43,1.42
+cinerascens,flor0018853,Klein_10614,2,13.44,na
+cinerascens,flor0021536,Silva_733,3,13.20,na
+cinerascens,flor0025866,Jarenkow_1152,5,12.67,na
+cinerascens,flor0000802,Klein_3430,2,12.83,na
+cipoensis,ny04218309,Almeda_8606,1.5,7.69,0.60
+cipoensis,ny03909692,Almeda_9185,1,6.00,1.80
+cipoensis,ny02210535,Goldenberg_1565,0.5,8.00,na
+corallina,flor21728,Falkenberg_5440,2,6.88,1.00
+corallina,ny01145602,Groppo_661,2,7.44,3.33
+corallina,ny00917016,Anderson_8661,0.8,6.00,2.50
+corallina,ny00917018,Irwin_29464,2,4.81,3.00
+corallina,ny00917003,Riedel_ny00917003,na,4.93,2.50
+corallina,flor33954,Pedralli_flor33954,na,5.12,na
+corallina,ny00917006,Macedo_2752,na,3.71,na
+corallina,ny00917014,Maguire_44610,2,4.84,na
+cowanii,ny00987361,Santos_220,5,19.00,2.09
+cowanii,ny00987360,Daly_4035a,3,7.48,3.60
+cowanii,ny00987362,Santos_508,4,11.14,na
+cowanii,ny02676038,Santos_3392,4,14.00,na
+cubatanensis,flor0056040,Cordeiro_1316,2.8,10.93,6.33
+cubatanensis,flor0042681,Arzolla_207,5,15.83,1.80
+cubatanensis,flor0009398,Falkenberg_2546,2,11.43,21.00
+cubatanensis,flor0027308 ,Silva_1349,4,10.29,10.33
+cubatanensis,flor0029280 ,Santos_94,4,10.69,5.20
+cubatanensis,flor0015813 ,Falkenberg_3436,2,9.00,5.67
+cubatanensis,flor0029346 ,Santos_77,2,11.33,4.67
+cubatanensis,flor0020104 ,Klein_9383,4,9.50,na
+cubatanensis,flor0000809 ,Reitz_8697,5,10.03,na
+cubatanensis,flor0003102 ,Klein_8289,6,11.88,na
+cubatanensis,flor0054612,Hagelund_flor0054612,na,7.80,na
+cyathanthera,ny01462489,Caddah_420,na,16.50,0.67
+cyathanthera,ny00917045,Anderson_35667,0.4,10.67,1.00
+cyathanthera,ny00917044,Irwin_29199,3,15.00,1.00
+cyathanthera,ny00521505,Harley_26380,3,10.00,na
+cyathanthera,ny00521508,Joly_4654,8,12.00,na
+dichrophylla,ny03686907,Cornejo_2313,25,8.05,0.50
+dichrophylla,ny1722249,Killeen_4878,15,9.29,0.42
+dichrophylla,ny00987670,Maguire_56013,10,10.80,0.59
+dichrophylla,ny00917057,Ratter_1422,15,9.60,0.36
+dichrophylla,ny02608241,Cardenas_43394,10,7.17,1.25
+dichrophylla,ny03271512,Williams_6472,na,6.15,0.86
+dichrophylla,ny03697879,Perea_2832,4,5.82,na
+dichrophylla,ny01539049,Zenteno_2769,8,10.29,na
+dichrophylla,ny00987459,Coelho_d43,na,7.78,na
+dichrophylla,ny00987457,Ferreira_5356,12,8.57,na
+dichrophylla,ny03271517,McDaniel_14093,8,11.82,na
+discolor,flor0034143 ,MelloSilva_831,5,15.00,2.10
+discolor,flor0058308 ,Mello_121,5,22.00,2.44
+discolor,flor0055851 ,Silva_7,3.5,12.00,1.55
+discolor,flor0064892 ,Jarenkow_3649,na,14.67,na
+dispar,upcb79394,Meirelles_775,3,8.40,0.72
+dispar,upcb58969,Goldenberg_967,12,6.43,0.70
+dispar,upcb42795,Ivanauskas_4211,7,7.68,0.47
+dispar,ny1722347,McDaniel_26291,12,4.89,0.28
+dispar,ny1722382,Steyermark_122244,5,8.00,0.44
+dispar,upcb90322,Engels_12,6,na,na
+dispar,ny00917047,Cid_4380,3,7.00,na
+dispar,ny1722383,Clark_6895,11,6.86,na
+dispar,ny00987417,Prance_21669,5,8.00,na
+fallax,flor0033497 ,Kosmann_flor0033497,2,6.00,0.64
+fallax,ny01796333,Bermudez_17c849,0.5,4.94,0.38
+fallax,ny00917094,Irwin_11235,1.5,3.58,1.00
+fallax,flor0031079,Cavalcanti_1748,na,4.78,0.48
+fallax,flor0045247 ,Guarino_412,na,5.50,na
+fallax,flor0015279,Hatschbach_49606,1.5,na,na
+fallax,ny00917099,Harley_24955,0.85,4.00,na
+fasciculata,flor0040821 ,Baumgratz_1114,na,11.00,2.33
+fasciculata,flor0039304 ,Folchini_449,na,7.70,1.50
+fasciculata,flor0007752 ,Souza_665,5,11.82,0.75
+fasciculata,flor0018841 ,Klein_10583,2,10.50,na
+fasciculata,flor0023981 ,Hatschbach_56127,3,9.53,na
+ferruginata,flor0046007,Sampaio_227,1.5,4.62,0.50
+ferruginata,flor0034219,Nunes_21,na,4.33,1.96
+ferruginata,flor0031172,Vieira_530,3,3.63,0.72
+ferruginata,flor0031157,Walter_2584,na,4.73,1.10
+ferruginata,flor0031065,Cavalcanti_549,2.5,3.82,1.56
+ferruginata,flor0051459,Souza_1437,2,2.93,1.36
+ferruginata,upcb0027697,Castro_346,na,4.09,na
+ferruginata,upcb0091607,Meyer_1141,3,3.49,na
+ferruginata,flor0044943,Faria_99,na,3.86,na
+flammea,flor0023353 ,Souza_1238,3,4.13,13.00
+flammea,flor????,Nunes_6,na,5.18,23.00
+flammea,ny00521338,Harley_22569,3,3.79,10.50
+flammea,ny01145619,Goldenberg_916,8,5.09,27.50
+flammea,ny00916988,Irwin_22458,2,2.18,8.00
+flammea,flor????,Klein_9910,3,6.56,na
+flammea,flor0018837 ,Klein_10482,3,7.00,na
+flammea,ny00629574,Lughadha_h52022,2,3.60,na
+flammea,ny00916882,Macedo_2831,na,4.29,na
+formosa,furb29876,StivalSantos_1165,10,5.33,4.00
+formosa,flor????,Falkenberg_3944,5,5.82,1.85
+formosa,upcb0016834,Ceccantini_3226,10,7.31,4.89
+formosa,upcb0030618,Voltz_1032,10,9.33,4.44
+formosa,flor0018785,Bresolin_797,10,4.62,na
+formosa,upcb0016858,Goldenberg_1673,5,8.50,na
+formosa,mbm164725,Falkenberg_5578,8,5.91,na
+formosa,flor0018786,Bresolin_883,15,4.91,na
+heliotropoides,flor0031159 ,Walter_741,1.5,12.50,0.17
+heliotropoides,upcb0015471,Mota_1068,2.5,11.79,0.19
+heliotropoides,upcb0015500,Roneides_13,0.6,22.00,0.14
+heliotropoides,upcb0015498,Pott_5182,1.3,20.00,0.13
+heliotropoides,upcb0015471,Bernacci_2622,1.5,15.00,0.08
+heliotropoides,upcb0015480,Goldenberg_1486,1,16.33,0.09
+heliotropoides,flor0031024 ,Walter_3505,2,14.63,na
+heliotropoides,upcb????,Marquete_2580,1,14.14,na
+heliotropoides,upcb0015489,Snak_757,3,9.00,na
+hyemalis,flor0019767 ,Hatschbach_52530,2,6.60,1.80
+hyemalis,flor0021535 ,Silva_726,2,4.95,1.00
+hyemalis,flor0057909 ,Lozano_1548,3,7.31,1.20
+hyemalis,flor0058930,Fiaschi_4433,1.5,6.54,1.09
+hyemalis,flor0034223 ,Boff_153,na,9.09,0.60
+hyemalis,flor0008292 ,Sehnem_flor0008292,na,na,na
+hyemalis,flor0015473 ,Wasum_281,na,8.73,na
+hyemalis,flor0015550 ,Sobral_4214,2.5,6.91,na
+hyemalis,flor0022900 ,Jarenkow_908,3,6.93,na
+hypoleuca,ny00521707,Mori_11361,8,11.25,0.04
+hypoleuca,ny02098455,ChagasMota_7904,5,12.00,0.11
+hypoleuca,ny00521696,Steyermark_87954,10,9.00,0.09
+hypoleuca,ny03272194,Stephen_44967,17.5,13.50,0.04
+hypoleuca,ny01184230,Pessoa_1085,7,12.00,0.07
+hypoleuca,ny03272198,JansenJacobs_1965,5,8.00,na
+hypoleuca,ny00095177,Thomas_11056,4,15.00,na
+hypoleuca,ny00521710,Pirani_2954,8,8.57,na
+kollmannii,ny1738493,Goldenberg_1526,3,6.67,2.50
+lepidota,mbml00038138,Baumgratz_1288,10,9.82,0.47
+lepidota,mbml00038134,Rossini_343,11,7.50,0.76
+lepidota,mbml00038108,Kollmann_262,14,7.56,1.07
+lepidota,ny00987684,Prance_3648,8,6.00,4.18
+lepidota,ny1653273,Claire_569,7,6.75,0.39
+lepidota,mg200947,Cordeiro_3452,6,10.83,na
+lepidota,mbml00038109,Luchiari_722,9,10.83,na
+lepidota,ny00987661,Silva_1858,10,8.00,na
+lepidota,ny1652716,Cuatrecasas_16662,8,4.83,na
+longispicata,ny00987712,Anderson_12153,6,24.00,0.50
+longispicata,ny00987722,Nee_43004,3,11.20,0.44
+longispicata,ny00987716,Cid_1429,6,20.00,0.53
+longispicata,ny01019594,Zappi_1150,4,12.00,0.41
+longispicata,ny01176808,Ramos_373,6,11.43,na
+longispicata,ny03358573,Clark_6710,na,11.20,na
+longispicata,ny00987713,Prance_20731,3,16.00,na
+lourteigiana,ny01796300,Williams_760,1.8,16.00,0.10
+lourteigiana,ny00755182,Ehringhaus_626,8,12.50,0.21
+lourteigiana,ny1653014,Rimachi_4066,3,11.70,1.00
+lourteigiana,ny01796301,Kahn_2244,3,12.10,0.35
+lourteigiana,ny00755249,Ehringhaus_1033,4,14.67,na
+lourteigiana,ny1654031,Cuatrecasas_27227,5,9.60,na
+lourteigiana,ny1654034,Wurdack_1919,6.5,15.00,na
+lymanii,flor0016374 ,Falkenberg_3570,2,5.88,0.44
+lymanii,flor0025775 ,Roderjan_981,5,6.43,6.25
+lymanii,flor0067550 ,Silva_5,4,6.23,2.80
+lymanii,flor0000780 ,Reitz_4375,4,5.88,na
+lymanii,flor0000834 ,Reitz_10155,4,5.71,na
+lymanii,flor0017728 ,Falkenberg_4727,2.5,4.88,na
+lymanii,flor0018782 ,Klein_9723,3,7.70,na
+macrothyrsa,flor0052009,Souza_1433,0.5,10.42,0.61
+macrothyrsa,upcb0016278,Caddah_332,na,10.50,1.52
+macrothyrsa,flor0031069,Coradin_4941,1,7.67,na
+macrothyrsa,upcb0016266,Rodrigues_133,na,11.20,na
+macrothyrsa,upcb0016267,Labiak_5880,2,6.25,na
+macrothyrsa,upcb0016264,Stehmann_2609,na,6.63,na
+macrothyrsa,upcb0016350,Magalhaes_15,2,9.43,0.92
+macrothyrsa,upcb0016268,Goldenberg_522,0.5,7.62,1.46
+macuxi,ny01404817,Huber_4998_a,1.5,5.85,0.83
+macuxi,ny01856163,Rocha_765,1,4.81,na
+macuxi,ny03358647,Huber_10292,1.75,5.00,na
+macuxi,ny01404815,Tate_322,na,4.00,na
+mayarae,ny01796346,Rosa_1777,4,12.50,0.50
+mayarae,ny03241528,Cowan_38973,2,4.50,0.92
+mayarae,ny03241554,Stergios_11181,6,6.29,0.67
+mayarae,ny01796349,Reden_1922,5,11.25,0.67
+mayarae,ny00987152,Vieira_748,4,11.00,0.31
+mayarae,ny00987157,Oliveira_203,2,12.75,na
+mayarae,ny01796351,unknown_7548,3,13.33,na
+mayarae,ny1738517,Pipoly_11163,7,4.55,na
+multispicata,mg41065,Prance_9730,15,9.03,1.96
+multispicata,mg41148,Prance_10175,18,10.00,2.46
+multispicata,ny03785218,Monteagudo_5869,na,7.50,2.88
+multispicata,ny1653431,Penneys_1867,7,9.55,2.13
+multispicata,ny01855731,Orellana_1266,7,11.00,2.96
+multispicata,upcb0016452,Aguilar_10751,10,11.00,na
+multispicata,upcb0016457,Zappi_3002,30,12.22,na
+multispicata,ny03676868,Rojas_1353,10,11.00,na
+navioensis,ny01098178,Costa_221,na,9.43,0.31
+navioensis,ny00924914,Froes_11758 ,7.5,5.29,0.41
+navioensis,ny01098184,Rosa_4137,6,5.60,1.08
+navioensis,ny01098176,Santos_566,6,9.17,na
+octopetala,ny01519481,Borges_405,10,6.07,9.16
+octopetala,ny00521925,Mori_11063,5,4.62,25.42
+penduliflora,ny03815925,Bacci_367,4,4.71,4.84
+penduliflora,ny1738496,Goldenberg_1536,1.5,5.00,9.00
+penduliflora,ny03815919,Bacci_373,2,5.71,9.47
+pepericarpa,flor0031115 ,Assis_174,6,7.50,0.47
+pepericarpa,flor0046124 ,Sampaio_3,8,7.20,1.40
+pepericarpa,flor????,Assis_103,3,8.00,na
+pepericarpa,flor0053306 ,Harley_50402,1.5,8.40,na
+petroniana,ny01318449,Caddah_766,4.5,9.75,1.50
+petroniana,ny1738498,Goldenberg_1541,10,12.86,1.50
+petroniana,flor0062288,Goldenberg_2253,8,9.23,na
+polyandra,mbml00038281,Fontana_1602,2,22.00,0.43
+polyandra,mbml048722,Goldenberg_2153,7,18.00,0.67
+polyandra,mbml00032290,Goldenberg_2190,6,14.63,0.74
+polyandra,mbml00038294,Goldenberg_1057,3,10.80,0.54
+polyandra,mbml00038296,Meirelles_282,3,6.47,0.48
+polyandra,mbml00038288,Meirelles_444,3,7.41,0.50
+polyandra,mbml00038297,Kollmann_6378,4,11.00,na
+polyandra,mbml00038278,Vervloet_1609,2,10.00,na
+polyandra,mbml0020949,Amorim_5632,12,10.08,na
+polyandra,mbml00038292,Goldenberg_1280,2,6.23,na
+pterocaulon,ny1653778,Callejas_8104,10,9.75,0.61
+pterocaulon,ny03108522,Almeda_10273,9,11.54,0.42
+pterocaulon,ny03368073,Schunke_10088,4.5,8.25,0.59
+punctata,ny01855698,SchunkeVigo_16397,3.5,6.75,3.00
+punctata,upcb85428,Goldenberg_1928,8,7.33,4.30
+punctata,upcb90551,Antoniazzi_upcb90551,na,16.50,3.33
+punctata,upcb85429,Goldenberg_1964,6,7.77,3.25
+punctata,ny01874427,Jaramillo_471,15,4.50,na
+punctata,ny03676812,Almeda_10427,10,7.33,na
+punctata,ny03368144,Bang_1685,na,6.75,na
+racemifera,ny03368216,Goldenberg_1629,5,16.50,0.33
+racemifera,ny01318270,Caddah_763,3.5,13.00,0.45
+racemifera,ny00522134,Klein_127,3,6.15,na
+rondoniensis,ny03468450,Boelter_461,5,7.58,0.14
+rondoniensis,ny00987409,Nee_34794,14,2.73,0.22
+rufescens,ny01097905,Rabelo_252,2,6.15,0.28
+rufescens,ny01097912,Kirkbride_2821,1.5,12.50,0.30
+rufescens,ny02480132,Simon_2166,1.5,4.00,0.55
+rufescens,ny1653901,Toledo_844,1.5,6.50,0.24
+rufescens,ny03677146,Campos_3311,1.8,6.43,0.24
+rufescens,ny02540455,Michelangeli_1752,1,8.18,0.24
+rufescens,ny01097910,Austin_6971,2,9.00,na
+rufescens,ny01097900,Cavalcante_2592,0.8,7.50,na
+rufescens,ny01467406,Daza_4029,2,7.20,na
+rufescens,ny00925238,Cordeiro_1188,na,6.86,na
+ruficalyx,mg233725,Oliveira_4639,5.5,8.33,na
+ruficalyx,mg108892,Daly_3829,25,11.38,5.00
+ruficalyx,mg37237,Silva_2427,8,6.92,6.08
+ruficalyx,upcb0019925,Amorim_6276,10,6.30,0.96
+ruficalyx,upcb0033430,Quinet_1195,12,9.00,1.10
+ruficalyx,mg28907,Pires_50311,10,9.09,na
+ruficalyx,mg131066,Rosario_897,na,15.00,na
+ruficalyx,upcb0019921,Fiaschi_2340,12,na,na
+ruschiana,ny1738455,Caddah_857,2.5,8.13,1.60
+ruschiana,ny1654190,Caddah_855,3,7.00,1.50
+ruschiana,ny02210467,Goldenberg_1625,2.5,10.00,1.50
+sclerophylla,ny00925246,Mexia_5769,1.75,4.36,2.33
+sclerophylla,ny00522191,Harley_22809,1.5,5.57,3.33
+sclerophylla,ny00522192,Harley_19545,4,3.50,3.00
+sclerophylla,ny00917015,Maguire_44766,na,4.50,na
+sclerophylla,ny00522193,Thomas_4872,1.75,4.24,na
+sclerophylla,ny00629585,Stannard_51130,1.5,4.20,na
+secundiflora,ny03107555,Torke_1327,na,11.29,0.41
+secundiflora,ny01098107,Silva_2203,2,4.80,0.28
+secundiflora,ny01098103,Pires_6488,na,7.33,0.47
+secundiflora,ny00987013,Lobo_92,4.5,10.29,na
+secundiflora,ny01174898,Riedel_231,na,9.58,na
+secundiflora,ny01098104,Pires_4397,na,12.00,na
+serialis,ny01796314,Clarke_3397,3,5.45,0.65
+serialis,ny00558030,Almeida_8,8,8.10,0.63
+serialis,ny1654037,Carabot_4652,na,7.07,0.59
+serialis,ny01796312,Diaz_3128,5,7.33,0.53
+serialis,ny00558031,Rodal_748,5,9.00,na
+serialis,ny00925918,LemosFroes_11729 ,na,9.00,na
+serialis,ny02479084,Forzza_6850,4,6.67,na
+shepherdii,ny03287746,Ivanauskas_6632,12,12.00,1.33
+shepherdii,ny02514754,Goldenberg_2189,8,6.86,2.00
+shepherdii,ny1738500,Goldenberg_1504,7,9.00,1.00
+shepherdii,ny00522450,LemosFroes_20146,na,11.25,1.67
+shepherdii,ny00522426,Apparicio_812,na,10.91,na
+stenostachya,flor0064957,Rosa_583,1.2,7.86,0.63
+stenostachya,flor0036070 ,Amaral_166,2,6.19,0.36
+stenostachya,flor0034182 ,Souza_1430,1.5,6.14,0.61
+stenostachya,ny00522296,Nee_39702,2,9.33,0.29
+stenostachya,ny01796335,Killip_15028,1.5,8.56,0.35
+stenostachya,ny03677293,Suclli_2361,8,13.50,0.23
+stenostachya,ny00521925,Suclli_1193,3,7.20,na
+stenostachya,flor0028373 ,Hatschbach_67043,2.5,5.68,na
+stenostachya,flor0009198 ,Hatschbach_49513,2,5.14,na
+suberosa,ny02497201,Meirelles_784,4,15.00,1.33
+tiliifolia,upcb????,Martinelli_16785,8,9.75,0.20
+tiliifolia,ny1738715,Fuentes_5557,1.2,8.00,0.18
+tiliifolia,ny03677842,Huamantupa_7195,2,6.00,0.11
+tiliifolia,flor0031026 ,Cavalcanti_2375,1.5,5.72,0.14
+tiliifolia,upcb????,DamascenoJunior_2966,4,na,na
+tiliifolia,ny03460620,Buchtien_1063,1.5,6.67,na
+valtheri,mbml053590,SantosFilho_35,3,8.36,0.86
+valtheri,ny00521561,Reitz_6589,4,5.73,0.34
+valtheri,upcb56187,Mota_536,3,12.00,na
+valtheri,ny00521562,Hatschbach_7719,na,6.75,na
+valtheri,ny00521559,Glaziou_16013,na,16.33,na
+willdenowii,ny1738437,Caddah_826,3,5.00,10.00
+willdenowii,ny1738457,Caddah_863,4,9.14,7.00
+willdenowii,ny03257230,Martinelli_19891,2.5,7.27,15.50
+willdenowii,ny01318252,Reginato_760,2,10.00,na
+willdenowii,ny00522415,DomingosLemos_7529,na,7.50,na
