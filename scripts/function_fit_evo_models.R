@@ -1,7 +1,6 @@
-# dependencies:
-# library(OUwie)
+### dependencies: library(OUwie)
 
-fit_evo_models = function(tree, regimes, models_to_fit){
+fit_evo_models = function(phy, data, mserr= NULL, models_to_fit){
   #setting fitting tables
   model_fit_table = data.frame(matrix(NA, nrow= length(models_to_fit), ncol=3))
   colnames(model_fit_table) = c("model","llik","aicc")
@@ -9,7 +8,11 @@ fit_evo_models = function(tree, regimes, models_to_fit){
   model_estimate_list = vector("list", length(models_to_fit))
   for (i in 1:length(models_to_fit)){
     # fitting models
-    fit=OUwie(phy=tree, data=regimes, model=models_to_fit[i], lb=0, ub=Inf) 
+    fit=OUwie(phy=phy, 
+              data=data, 
+              mserr = mserr,
+              model=models_to_fit[i],
+              lb=0, ub=Inf) 
     # picking fitting metrics
     model_fit_table[i,] = c(models_to_fit[i],fit$loglik,fit$AICc)
     # picking model estimates

@@ -1,4 +1,8 @@
 choose_best = function (fit_results){
+  
+  model_names = c("BM1", "BMS", "OU1", "OUM", "OUMV", "OUMA", "OUMVA")
+  fit_results = all_fits
+  
   # calculate delta_aicc 
   delta_aicc = as.numeric(fit_results$fit_metrics$aicc) - min(as.numeric(fit_results$fit_metrics$aicc))
   fit_results$fit_metrics = data.frame(fit_results$fit_metrics, delta_aicc)
@@ -6,8 +10,28 @@ choose_best = function (fit_results){
   first_delta = fit_results$fit_metrics[fit_results$fit_metrics$aicc == min(as.numeric(fit_results$fit_metrics$aicc)),]
   minus_first = fit_results$fit_metrics[-which( fit_results$fit_metrics$aicc == min(as.numeric(fit_results$fit_metrics$aicc)) ),]
   second_delta =  minus_first[minus_first$aicc == min(as.numeric(minus_first$aicc)),]
+  # correcting when two models w same delta
+  if(nrow(first_delta) > 1 ){
+    model_1_i = which(first_delta$model[1] == model_names)
+    model_2_i = which(first_delta$model[2]== model_names)
+    if(model_1_i < model_2_i){
+      first_delta = first_delta[1,]
+    }
+    if(model_1_i > model_2_i){
+      first_delta = first_delta[2,]
+    }
+  }
+  if(nrow(second_delta) > 1 ){
+    model_1_i = which(second_delta$model[1] == model_names)
+    model_2_i = which(second_delta$model[2] == model_names)
+    if(model_1_i < model_2_i){
+      second_delta = second_delta[1,]
+    }
+    if(model_1_i > model_2_i){
+      second_delta = second_delta[2,]
+    } 
+  }
   # index to check complexity
-  model_names = fit_results$fit_metrics[,1]
   first_index = which(model_names == first_delta$model)
   second_index = which(model_names == second_delta$model)
   # compare delta aicc and pick best-fit model

@@ -2,6 +2,11 @@ if (!require("tidyverse")) install.packages("tidyverse"); library("tidyverse")
 if (!require("ggplot2")) install.packages("ggplot2"); library("ggplot2")
 if (!require("ape")) install.packages("ape"); library("ape")
 if (!require("diversitree")) install.packages("diversitree"); library("diversitree")
+if (!require("data.table")) install.packages("data.table"); require("data.table")
+
+################################## MY FUNCTIONS #################################
+
+source("scripts/function_calculate_aicc.R")
 
 ############################### LOADING DATA #################################
 
@@ -39,7 +44,7 @@ rand_param_list = list()
 null_param_list = list()
 
 for (i in 1:length(phylo_trees) ){
-
+  
   ### picking one phylogenetic tree
   one_phylo = phylo_trees[[i]]
 
@@ -48,12 +53,14 @@ for (i in 1:length(phylo_trees) ){
                           states = eco_states,
                           sampling.f= 0.85)
   
-  ### full bisse function w random states
-  names(rand_states) = sample(names(eco_states))
+  bisse_full = constrain(bisse_full, q01 ~ q10)
   
-  bisse_rand = make.bisse(tree = one_phylo, 
-                          states = rand_states, 
-                          sampling.f= 0.85)
+  ### full bisse function w random states
+  # names(rand_states) = sample(names(eco_states))
+  # 
+  # bisse_rand = make.bisse(tree = one_phylo, 
+  #                         states = rand_states, 
+  #                         sampling.f= 0.85)
   
   ### null bisse function
   bisse_null = constrain(bisse_full, lambda0 ~ lambda1, mu0 ~ mu1)
@@ -63,17 +70,17 @@ for (i in 1:length(phylo_trees) ){
   
   ### FULL MODEL find parameter values
   fit_full = find.mle(func = bisse_full,
-                      x.init = start_bisse
+                      x.init = start_bisse[-6]
                       )
   
   ### RANDOM MODEL find parameter values
-  fit_rand = find.mle(func = bisse_rand,
-                      x.init = start_bisse
-                      )
+  # fit_rand = find.mle(func = bisse_rand,
+  #                     x.init = start_bisse
+  #                     )
   
   ### NULL MODEL find parameter values
   fit_null = find.mle(func = bisse_null,
-                      x.init = start_bisse[-c(1,3)]
+                      x.init = start_bisse[-c(1,3,6)]
                       )
   
   ### calculating goodness of  fit
@@ -82,10 +89,10 @@ for (i in 1:length(phylo_trees) ){
                             n = n_tips
                             )
                
-  aicc_rand = calculate_aicc(lnlik = fit_rand$lnLik,
-                             k = length(fit_rand$par),
-                             n = n_tips
-                             )   
+  # aicc_rand = calculate_aicc(lnlik = fit_rand$lnLik,
+  #                            k = length(fit_rand$par),
+  #                            n = n_tips
+  #                            )   
   
   aicc_null = calculate_aicc(lnlik = fit_null$lnLik,
                              k = length(fit_null$par), 
@@ -93,152 +100,68 @@ for (i in 1:length(phylo_trees) ){
                              ) 
   
   ### vector with aicc scores             
-  aicc_scores = c(aicc_full, aicc_rand, aicc_null)
-  names(aicc_scores) = c("full", "rand", "null")
+  aicc_scores = c(aicc_full, aicc_null)
+  names(aicc_scores) = c("full", "null")
   
   ### adding to list
   aicc_scores_list[[i]] = aicc_scores
   
   ### adding parameter values
   full_param_list[[i]] = fit_full$par
-  rand_param_list[[i]] = fit_rand$par
+  #rand_param_list[[i]] = fit_rand$par
   null_param_list[[i]] = fit_null$par
   
   print(paste0("Diverfication estimates done: ", i) )
   
 }
 
+### from list to df
+aicc_scores_df = data.frame( t( sapply(aicc_scores_list,c) ) )
+full_param_df = data.frame( t( sapply(full_param_list,c) ) )
+null_param_df = data.frame( t( sapply(null_param_list,c) ) )
+
+### exporting AICc scores and parameters
+write.table(aicc_scores_df, 
+            "3_diversification_analyses/aicc_scores_df.csv",
+            sep=",",
+            row.names = F)
+
+write.table(full_param_df, 
+            "3_diversification_analyses/full_param_df.csv",
+            sep=",",
+            row.names = F)
+
+write.table(null_param_df, 
+            "3_diversification_analyses/null_param_df.csv",
+            sep=",",
+            row.names = F)
+
 ##################### Contrasting model and parameters ######################
 
-### read model and parameter estimates
-mcmc_full = read.table("3_diversification_analyses/mcmc_full.csv", sep=",", h = T)
-mcmc_rand = read.table("3_diversification_analyses/mcmc_rand.csv", sep=",", h = T)
-mcmc_null = read.table("3_diversification_analyses/mcmc_null.csv", sep=",", h = T)
+### read model fit and parameter estimates
+aicc_scores_df = read.table("3_diversification_analyses/q equall/aicc_scores_df.csv", 
+                            sep=",", h = T)
 
-### describing probabilities and parameters
-median(mcmc_null$p)
-IQR(mcmc_null$p)
+full_param_df = read.table("3_diversification_analyses/q equall/full_param_df.csv",
+                           sep=",", h = T)
 
+null_param_df = read.table("3_diversification_analyses/q equall/null_param_df.csv",
+                          sep=",", h = T)
 
-median(mcmc_full$mu1)
-IQR(mcmc_full$mu1)
+### best fit per tree
+best_models = colnames(aicc_scores_df)[apply(aicc_scores_df,1,which.min)]
+
+### describing parameters
+summary(null_param_df$lambda1 - null_param_df$mu1)
 
 ### plotting probibilities
-prob_plot = ggplot() +
+diversi_plot = ggplot(null_param_df) +
   
-  geom_density(data = mcmc_null,
-               aes(x= p), 
-               alpha = 0.75,
-               fill ="white", 
-               color = "black",
-               linetype = "dashed") +
-  
-  geom_density(data = mcmc_full,
-               aes(x= p),
-               alpha = 0.75,
-               fill ="black", 
-               color = "black") +
-  
-  scale_x_continuous(limits = c(-184,-162), 
-                     expand = c(0, 0)) +
-  
-  xlab("Posterior probability") +
-  ylab("Density")  +
-  
-  theme(panel.background= element_rect(fill="white"),
-        panel.grid= element_line(colour=NULL),
-        panel.border= element_rect(fill=NA,colour="black"),
-        axis.title= element_text(size= 10, face="bold"),
-        axis.text.x= element_text(size= 8, angle = 0),
-        axis.text.y= element_text(size= 8, angle = 0),
-        legend.position= "none")
-
-## exporting
-tiff("3_diversification_analyses/prob_plot.tiff", 
-     units="cm", width=7, height=6.2, res=600)
-prob_plot
-dev.off()
-
-
-### plotting lambda
-lambda_plot = ggplot(data = mcmc_full) +
-  
-  geom_density(aes(x= lambda0), 
-               alpha = 0.75,
-               fill ="orange", 
-               color = "orange") +
-  geom_density(aes(x= lambda1),
-               alpha = 0.75,
-               fill ="darkgreen", 
-               color = "darkgreen") +
-  
-  scale_x_continuous(limits = c(0,1.1), 
-                     expand = c(0, 0)) +
-  
-  xlab("Lambda") +
-  ylab("Density")  +
-  
-  theme(panel.background= element_rect(fill="white"),
-        panel.grid= element_line(colour=NULL),
-        panel.border= element_rect(fill=NA,colour="black"),
-        axis.title= element_text(size= 10, face="bold"),
-        axis.text.x= element_text(size= 8, angle = 0),
-        axis.text.y= element_text(size= 8, angle = 0),
-        legend.position= "none")
-
-## exporting
-tiff("3_diversification_analyses/lambda_plot.tiff", 
-     units="cm", width=7, height=6.2, res=600)
-lambda_plot
-dev.off()
-
-### plotting MU
-mu_plot = ggplot(data = mcmc_full) +
-  
-  geom_density(aes(x= mu0), 
-               alpha = 0.75,
-               fill ="orange", 
-               color = "orange") +
-  geom_density(aes(x= mu1),
-               alpha = 0.75,
-               fill ="darkgreen", 
-               color = "darkgreen") +
-  
-  scale_x_continuous(limits = c(-0.25,0.75), 
-                     expand = c(0, 0)) +
-  
-  xlab("Mu") +
-  ylab("Density")  +
-  
-  theme(panel.background= element_rect(fill="white"),
-        panel.grid= element_line(colour=NULL),
-        panel.border= element_rect(fill=NA,colour="black"),
-        axis.title= element_text(size= 10, face="bold"),
-        axis.text.x= element_text(size= 8, angle = 0),
-        axis.text.y= element_text(size= 8, angle = 0),
-        legend.position= "none")
-
-## exporting
-tiff("3_diversification_analyses/mu_plot.tiff", 
-     units="cm", width=7, height=6.2, res=600)
-mu_plot
-dev.off()
-
-
-### plotting diversification rates
-diversification_plot = ggplot(data = mcmc_full) +
-  
-  geom_density(aes(x= lambda0 - mu0), 
-               alpha = 0.75,
-               fill ="orange", 
-               color = "orange") +
   geom_density(aes(x= lambda1 - mu1),
                alpha = 0.75,
-               fill ="darkgreen", 
-               color = "darkgreen") +
-  
-  scale_x_continuous(limits = c(-0.3,0.9), 
-                     expand = c(0, 0)) +
+               fill ="gray",
+               color = "gray",
+               linetype = "solid") +
   
   xlab("Diversification rates") +
   ylab("Density")  +
@@ -252,40 +175,7 @@ diversification_plot = ggplot(data = mcmc_full) +
         legend.position= "none")
 
 ## exporting
-tiff("3_diversification_analyses/diversification_plot.tiff", 
+tiff("3_diversification_analyses/diversi_plot.tiff", 
      units="cm", width=7, height=6.2, res=600)
-diversification_plot
-dev.off()
-
-
-### plotting transition rates
-q_plot = ggplot(data = mcmc_full) +
-  
-  geom_density(aes(x= q01), 
-               alpha = 0.75,
-               fill ="orange", 
-               color = "orange") +
-  geom_density(aes(x= q10),
-               alpha = 0.75,
-               fill ="darkgreen", 
-               color = "darkgreen") +
-  
-  scale_x_continuous(limits = c(-0.1,0.7), 
-                     expand = c(0, 0)) +
-  
-  xlab("Transition rates") +
-  ylab("Density")  +
-  
-  theme(panel.background= element_rect(fill="white"),
-        panel.grid= element_line(colour=NULL),
-        panel.border= element_rect(fill=NA,colour="black"),
-        axis.title= element_text(size= 10, face="bold"),
-        axis.text.x= element_text(size= 8, angle = 0),
-        axis.text.y= element_text(size= 8, angle = 0),
-        legend.position= "none")
-
-## exporting
-tiff("3_diversification_analyses/q_plot.tiff", 
-     units="cm", width=7, height=6.2, res=600)
-q_plot
+diversi_plot
 dev.off()
