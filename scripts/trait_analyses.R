@@ -2,7 +2,9 @@ if (!require("tidyverse")) install.packages("tidyverse"); library("tidyverse")
 if (!require("ggplot2")) install.packages("ggplot2"); library("ggplot2")
 if (!require("ape")) install.packages("ape"); library("ape")
 if (!require("geiger")) install.packages("geiger"); library("geiger")
+if (!require("phytools")) install.packages("phytools"); library("phytools")
 if (!require("OUwie")) install.packages("OUwie"); library("OUwie")
+if (!require("nlme")) install.packages("nlme"); library("nlme")
 
 ################################ MY FUNCTIONS #################################
 
@@ -11,17 +13,14 @@ source("scripts/function_choose_best.R")
 
 ############################### LOADING DATA #################################
 
-### RANDOM SEED
-set.seed(42)
-
 ### loading phylogenetic tree
-pruned_mcc_phylo = read.tree("0_data/pruned_mcc_phylo.nwk")
+mcc_phylo = read.tree("0_data/pruned_mcc_phylo.nwk")
 
 ### counting pruned phylognetic trees
 n_phylo = length(list.files("0_data/pruned_phylos"))
 
 ### loading occurrence count per domain
-spp_count_domain = read.table("0_data/spp_count_domain.csv", h=T, sep=",")
+habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
 
 ### loading trait data
 trait_mtx = read.table("0_data/trait_matrix.csv", 
@@ -32,22 +31,12 @@ trait_mtx = read.table("0_data/trait_matrix.csv",
 ### sampled species
 sampled_sp = unique(trait_mtx$species)
 
-### define ecological state
-high_ths = 0.90
-low_ths = (1 - high_ths)
-eco_states = af_percentage = spp_count_domain$AF/ apply(spp_count_domain[,-1], MARGIN = 1, FUN=sum)
-eco_states[af_percentage >= high_ths] = "specialist"
-eco_states[af_percentage < high_ths] = "generalist"
-
-names(eco_states) = spp_count_domain$species
-
-### keeping only sampled species
-keep_eco_states = eco_states[names(eco_states) %in% sampled_sp]
-
-############################### EDA ########################################
+### defininf states
+spp_states = habitat_range$range
+names(spp_states) = habitat_range$species
 
 ### trait values per species
-sp_traits = trait_mtx %>% 
+spp_traits = trait_mtx %>% 
   group_by(species) %>% 
   reframe(height = mean(plant_height, na.rm=T) ,
           sla =  mean(sla, na.rm=T) ,
@@ -55,136 +44,68 @@ sp_traits = trait_mtx %>%
           n = n()
   )
 
-############################ ANCESTRAL STATE RECONSTRUCTION ##############################
+################################## PGLS #########################################
 
-### ancestral node numbers
-n_node = pruned_mcc_phylo$Nnode
+### choosing a trait
+trait = log(spp_traits$seed)
+names(trait) = spp_traits$species
 
-### list of ancestral states for each phylo
-q_values_list = list()
+### fitting models
+fit_bm = fitContinuous(phy= mcc_phylo, dat = trait,  model="BM")
+fit_ou = fitContinuous(phy= mcc_phylo, dat = trait,  model="OU")
 
-### list of ancestral states for each phylo
-anc_states_list = list()
+### choosing model aicc
+if(fit_bm$opt$aicc < fit_ou$opt$aicc){
+  sigsq = fit_bm$opt$sigsq
+  cor_str = corBrownian(sigsq, phy = mcc_phylo, form= ~1)
+}
+if(fit_bm$opt$aicc > fit_ou$opt$aicc & (fit_bm$opt$aicc - fit_ou$opt$aicc) >= 2 ){
+  alpha = fit_ou$opt$alpha
+  cor_str = corMartins(alpha, phy = mcc_phylo, form= ~1)
+}
 
-for (i in 1:n_phylo){
-  
-  ### importing phylogenetic tree
-  pruned_phylo_path = paste0("0_data/pruned_phylos/pruned_phylo_", as.character(i))
-  pruned_phylo = read.tree(pruned_phylo_path)
-    
-  ### fitting equal rates
-  er_fit = fitDiscrete(phy = pruned_phylo , 
-                        dat = keep_eco_states,
-                        model="ER")
-  
-  ### fitting symmetric
-  ard_fit = fitDiscrete(phy = pruned_phylo , 
-                        dat =keep_eco_states,
-                        model="ARD")
-  
-  ### picking AICc scores
-  aicc= c(er_fit$opt$aicc, ard_fit$opt$aicc)
-  names(aicc) = c("ER","ARD")
-  
-  ### chossing best transition model
-  if (aicc[["ER"]] <= aicc[["ARD"]]) {
-    model = "ER"
-  } else {
-    model = "ARD"
-  }
-  
-  ### choosing Q matrix
-  if(model == "ER"){
-    q_values= c("ER", er_fit$opt$q12, er_fit$opt$q21)
-    names(q_values) = c("model","q12","q21")
-  }
-  if(model == "ARD"){
-    q_values= c("ARD",ard_fit$opt$q12, ard_fit$opt$q21)
-    names(q_values) = c("model", "q12","q21")
-  }
-  
-  ### keeping best fit Q matrix
-  q_values_list[[i]] = q_values
-  
-  ### prior for ancestral state
-  pi = c(1,0)
-  names(pi) = c("generalist", "specialist")
-  
-  ### infer simmaps
-  all_maps = phytools::make.simmap(tree = pruned_phylo, 
-                                   x = keep_eco_states, 
-                                   model= model,
-                                   nsim=100,
-                                   pi = pi
-                                   )
-  
-  ### describe maps
-  des_map =  phytools::describe.simmap(all_maps)
-  
-  ### ancestral states probs
-  ace = des_map$ace
-  
-  ### all states
-  all_states = colnames(ace)[apply(ace,1,which.max)]
-  
-  ### ancestral node states
-  anc_states = all_states[1:n_node]
-  
-  ### adding to list
-  anc_states_list[[i]] = anc_states
-  
-  print(paste0("Ancestal reconstruction done:", i))
-  
-} 
+### fitting pgls
+fit_gls = gls(trait ~ spp_states,
+              correlation= cor_str, 
+              method = "REML")
 
-### exporting ancetral state list
-saveRDS(q_values_list, "2_trait_analyses/q_values_list.RDS")
+summary(fit_gls)
+plot(fit_gls)
 
-### exporting ancetral state list
-saveRDS(anc_states_list, "2_trait_analyses/anc_states_list.RDS")
+### checking residuals
+res = resid(fit_gls)[1:nrow(spp_traits)]
+hist(res)
+shapiro.test(res)
 
-########################## comparing transition models ######################
+##################################### OUWIE ####################################
 
-### importing Q values
-q_values_list = readRDS("2_trait_analyses/q_values_list.RDS")
-
-### from list to df
-q_values_df = data.frame( t( sapply(q_values_list,c) ) )
-
-### most common best fit
-table(q_values_df$model)
-
-### transition rates
-q12 = as.numeric(q_values_df$q12)
-q21 = as.numeric(q_values_df$q21)
-
-### describing transition rates
-mean(q12)
-sd(q12)
-
-mean(q21)
-sd(q21)
-################################ OUWIE ########################################
-
-### loading ancetral state list
-anc_states_list = readRDS("2_trait_analyses/anc_states_list.RDS")
-
-### setting regime df
-species = sp_traits$species
-regime = keep_eco_states
-
-## trait name
-trait_name = "sla"
-## trait values
-trait = sp_traits[[trait_name]]
-se = sp_traits[[trait_name]] / sqrt(sp_traits[["n"]])
-
-sp_regime_trait = data.frame(species, regime, trait, se)
-
-dir_check = dir.exists(paths=paste("2_trait_analyses/OUWIE/",trait_name, sep="") )
+### criando repositório para os testes OUWIE
+dir_check = dir.exists(paths="2_trait_results/OUWIE" )
 # create output dir if not created yet
 if (dir_check == FALSE){
-  dir.create(path= paste("2_trait_analyses/OUWIE/",trait_name, sep="") )
+  dir.create(path= "2_trait_results/OUWIE" )
+}
+
+### loading ancetral state list
+anc_states_list = readRDS("1_habitat_results/anc_states_list.RDS")
+
+### setting regime df
+species = spp_traits$species
+regime = spp_states
+
+## trait name
+trait_name = "seed"
+## trait values
+trait = log( spp_traits[[trait_name]] )
+se = sd(trait) / sqrt(spp_traits[["n"]])
+
+## ouwie table
+sp_regime_trait = data.frame(species, regime, trait, se)
+
+dir_check = dir.exists(paths=paste("2_trait_results/OUWIE/",trait_name, sep="") )
+# create output dir if not created yet
+if (dir_check == FALSE){
+  dir.create(path= paste0("2_trait_results/OUWIE/",trait_name) )
 }
 
 ### model to fit 
@@ -200,14 +121,14 @@ all_best_estimates = list()
 for (i in 1:n_phylo){
   
   ### importing phylogenetic tree
-  pruned_phylo_path = paste0("0_data/pruned_phylos/pruned_phylo_", as.character(i))
-  pruned_phylo = read.tree(pruned_phylo_path)
+  phylo_path = paste0("0_data/pruned_phylos/pruned_phylo_", as.character(i))
+  phylo = read.tree(phylo_path)
   
   ### adding ancestral states to phylo tree
-  pruned_phylo$node.label = anc_states_list[[i]]
+  phylo$node.label = anc_states_list[[i]]
   
-  
-  all_fits = fit_evo_models(phy= pruned_phylo, 
+  ### fitting all models
+  all_fits = fit_evo_models(phy= phylo, 
                             data= sp_regime_trait,
                             mserr = 'known',
                             models_to_fit = all_models)
@@ -217,12 +138,12 @@ for (i in 1:n_phylo){
   all_best_models[i,] = best_choice$best_fit
   all_best_estimates[[i]] = best_choice$best_estimates
   
-  print(paste0("Trait evolution done: ", i) )
+  print(paste0("Trait evolution, tree done: ", i) )
   
 }
 
 ### export path
-exp_path = paste0("2_trait_analyses/OUWIE/", trait_name)
+exp_path = paste0("2_trait_results/OUWIE/", trait_name)
 
 ### exporting model fit
 saveRDS(all_best_models, paste0(exp_path, "/all_best_models.RDS") )

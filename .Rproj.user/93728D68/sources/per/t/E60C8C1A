@@ -1,0 +1,27 @@
+{
+    "id": "E60C8C1A",
+    "path": "~/GitHub/habitat_range_Neotropics/scripts/diversification_musse_mcmc.R",
+    "project_path": "scripts/diversification_musse_mcmc.R",
+    "type": "r_source",
+    "hash": "1515251362",
+    "contents": "",
+    "dirty": false,
+    "created": 1707503527852.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "96,0",
+        "scrollLine": "81"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1707507300,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1707507300638,
+    "read_only": false,
+    "read_only_alternatives": []
+}
