@@ -47,7 +47,7 @@ spp_traits = trait_mtx %>%
 ################################## PGLS #########################################
 
 ### choosing a trait
-trait = log(spp_traits$seed)
+trait = log(spp_traits$height)
 names(trait) = spp_traits$species
 
 ### fitting models
@@ -96,7 +96,7 @@ regime = spp_states
 ## trait name
 trait_name = "seed"
 ## trait values
-trait = log( spp_traits[[trait_name]] )
+trait =  spp_traits[[trait_name]] 
 se = sd(trait) / sqrt(spp_traits[["n"]])
 
 ## ouwie table
@@ -118,7 +118,7 @@ colnames(all_best_models) = c(c("model","llik","aicc","delta_aicc"))
 ### best estiamtes list
 all_best_estimates = list()
 
-for (i in 1:n_phylo){
+for (i in 1:n_phylo){ 
   
   ### importing phylogenetic tree
   phylo_path = paste0("0_data/pruned_phylos/pruned_phylo_", as.character(i))
@@ -130,11 +130,11 @@ for (i in 1:n_phylo){
   ### fitting all models
   all_fits = fit_evo_models(phy= phylo, 
                             data= sp_regime_trait,
-                            mserr = 'known',
+                            #mserr = 'known',
                             models_to_fit = all_models)
-  
+  ### chose best model
   best_choice = choose_best(all_fits)
-  
+  ### take best estimates
   all_best_models[i,] = best_choice$best_fit
   all_best_estimates[[i]] = best_choice$best_estimates
   
@@ -144,40 +144,8 @@ for (i in 1:n_phylo){
 
 ### export path
 exp_path = paste0("2_trait_results/OUWIE/", trait_name)
-
 ### exporting model fit
 saveRDS(all_best_models, paste0(exp_path, "/all_best_models.RDS") )
-
 ### exporting best estimates list
 saveRDS(all_best_estimates, paste0(exp_path, "/all_best_estimates.RDS") )
 
-######################## Comparing models and parameters #######################
-
-### choose a trait!
-trait_name = "height"
-
-### import path
-imp_path = paste0("2_trait_analyses/OUWIE/", trait_name)
-
-### importing model fit
-all_best_models = readRDS( paste0(imp_path, "/all_best_models.RDS"))
-
-### importing model parameters
-all_best_estimates =  readRDS( paste0(imp_path, "/all_best_estimates.RDS"))
-
-### most frequent best fit 
-count_models = table(all_best_models$model)
-most_freq_model = names(count_models)[count_models == max(count_models)]
-
-### vector w position of best fit
-i_best = which(all_best_models$model == most_freq_model)
-
-### select parameter estimates from most freq best model
-freq_best_estimates = all_best_estimates[i_best]
-
-### from list to df
-est_df = data.frame( t( sapply(freq_best_estimates,c) ) )
-
-
-apply(est_df, MARGIN = 2, mean)
-apply(est_df, MARGIN = 2, sd)
