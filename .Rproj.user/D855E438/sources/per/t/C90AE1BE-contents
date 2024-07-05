@@ -58,7 +58,7 @@ species = spp_traits$species
 regime = habitat_range$range
 
 ## trait name
-trait_name = "seed"
+trait_name = "height"
 ## trait values
 trait = spp_traits[[trait_name]]
 se = spp_traits[[trait_name]] / sqrt(spp_traits[["n"]])
@@ -112,9 +112,9 @@ tiff(file_name,
     scale_fill_manual(values=state_cols)+
     scale_colour_manual(values=state_cols)+
     scale_x_discrete(labels= c(
-      "rainforest\nspecialist",
+      "rainforest",
       "generalist",
-      "open-vegetation\nspecialist "
+      "open-vegetation"
       )
     ) +
     
@@ -271,7 +271,7 @@ freq_best_estimates = all_best_estimates[i_best]
 est_df = data.frame( t( sapply(freq_best_estimates,c) ) )
 
 ### pick one paramenter
-param_name = "sigma"
+param_name = "theta"
 col_names = colnames(est_df)[grepl(param_name, colnames(est_df))]
 est = est_df[col_names]
 
@@ -338,9 +338,9 @@ plot_param = ggplot(data= clean_param_df,
   scale_fill_manual(values=state_cols)+
   scale_colour_manual(values=state_cols)+
   scale_x_discrete(labels= c(
-    "rainforest\nspecialist",
+    "rainforest",
     "generalist",
-    "open-vegetation\nspecialist "
+    "open-vegetation"
   )
   ) +
   
