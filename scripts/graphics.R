@@ -44,21 +44,23 @@ names(state_cols) = levels(habitat_range$range)
 
 ############################### trait analyses ##########################
 
-### traits per species
+### trait values per species
 spp_traits = trait_mtx %>% 
   group_by(species) %>% 
-  reframe(height = mean(plant_height, na.rm=T) ,
-          sla =  mean(sla, na.rm=T) ,
-          seed = mean(seed_weight, na.rm=T) ,
+  reframe(plant_hei = median(plant_height_m, na.rm=T) ,
+          leaf_sla =  median(leaf_sla, na.rm=T) ,
+          inflor_len = median(inflorescence_length_cm, na.rm=T),
+          fruit_wei = median(fruit_weight_mg, na.rm=T) ,
+          seed_num = median(seed_number, na.rm=T) ,
+          seed_wei = fruit_wei/seed_num,
           n = n()
   )
-
 ### setting regime df
 species = spp_traits$species
 regime = habitat_range$range
 
 ## trait name
-trait_name = "height"
+trait_name = "plant_hei"
 ## trait values
 trait = spp_traits[[trait_name]]
 se = spp_traits[[trait_name]] / sqrt(spp_traits[["n"]])
@@ -73,11 +75,14 @@ sp_regime_trait %>%
 
 ### graphical param
 ## y axis name
-if(trait_name == "height"){
+if(trait_name == "plant_hei"){
   y_axis_name = "plant height (m)"
 }
-if(trait_name == "sla"){
+if(trait_name == "leaf_sla"){
   y_axis_name = "SLA (mm2/mg)"
+}
+if(trait_name == "inflor_len"){
+  y_axis_name = "inflorescence length (cm)"
 }
 if(trait_name == "seed"){
   y_axis_name = "seed mass (mg)"
@@ -252,7 +257,7 @@ dev.off()
 ############################### OUwie estimates ################################
 
 ### choose a trait!
-trait_name = "seed"
+trait_name = "plant_hei"
 ### import path
 imp_path = paste0("2_trait_results/OUWIE/", trait_name)
 ### importing model fit
@@ -307,7 +312,7 @@ clean_param_df %>%
 if(trait_name == "height"){
   y_axis_name = "plant height (m)"
 }
-if(trait_name == "sla"){
+if(trait_name == "leaf_sla"){
   y_axis_name = "SLA (mm2/mg)"
 }
 if(trait_name == "seed"){

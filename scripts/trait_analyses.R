@@ -38,16 +38,19 @@ names(spp_states) = habitat_range$species
 ### trait values per species
 spp_traits = trait_mtx %>% 
   group_by(species) %>% 
-  reframe(height = mean(plant_height, na.rm=T) ,
-          sla =  mean(sla, na.rm=T) ,
-          seed = mean(seed_weight, na.rm=T) ,
+  reframe(plant_hei = median(plant_height_m, na.rm=T) ,
+          leaf_sla =  median(leaf_sla, na.rm=T) ,
+          inflor_len = median(inflorescence_length_cm, na.rm=T),
+          fruit_wei = median(fruit_weight_mg, na.rm=T) ,
+          seed_num = median(seed_number, na.rm=T) ,
+          seed_wei = fruit_wei/seed_num,
           n = n()
   )
 
 ################################## PGLS #########################################
 
 ### choosing a trait
-trait = log(spp_traits$height)
+trait = log(spp_traits$leaf_sla)
 names(trait) = spp_traits$species
 
 ### fitting models
@@ -94,7 +97,7 @@ species = spp_traits$species
 regime = spp_states
 
 ## trait name
-trait_name = "seed"
+trait_name = "plant_hei"
 ## trait values
 trait =  spp_traits[[trait_name]] 
 se = sd(trait) / sqrt(spp_traits[["n"]])

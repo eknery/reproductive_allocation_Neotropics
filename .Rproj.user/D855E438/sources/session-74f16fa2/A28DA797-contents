@@ -1,0 +1,21 @@
+
+
+spp_traits =spp_traits %>% 
+  left_join(habitat_range, by = "species") 
+
+ggplot(data = spp_traits,
+       aes(x= range,
+           y= leaf_sla)) + 
+
+  geom_point(position = position_jitter(width = 0.10), 
+           size = 1, 
+           alpha = 0.75
+  ) +
+  
+  geom_boxplot(weight = 0.5/length(unique(spp_trait$range)),
+               linewidth = 0.3, 
+               color= "black",
+               alpha = 0.50, 
+               outlier.shape = NA
+  )
+
