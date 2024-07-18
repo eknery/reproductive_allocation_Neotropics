@@ -18,12 +18,11 @@ if (dir_check == FALSE){
 ### phylogenetic tree 
 mcc_phylo = read.tree("0_data/pruned_mcc_phylo.nwk")
 
-### importing habita range
-habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
-
 ### loading trait data
 trait_mtx = read.table("0_data/trait_matrix.csv", 
                        h=T, sep=",", na.strings = "na")
+### importing habita range
+habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
 
 ############################# processing data ##############################
 

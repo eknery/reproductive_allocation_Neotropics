@@ -1,0 +1,26 @@
+{
+    "id": "47A4A047",
+    "path": "C:/Users/eduar/OneDrive/Desktop/GitHub/habitat_range_Neotropics/scripts/trait_evolution.R",
+    "project_path": "scripts/trait_evolution.R",
+    "type": "r_source",
+    "hash": "564379290",
+    "contents": "",
+    "dirty": false,
+    "created": 1721263386097.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "27,0",
+        "scrollLine": "14"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1721264284,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1721264284629,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -130,7 +130,5 @@ if(most_freq_model == "sxd_fit"){
 ### get final parameter estimates
 final_params = best_params[which(best_models == most_freq_model),]
 
-apply(final_params, FUN= mean, MARGIN = 2)
-
 ### export best-fit model parameters
 saveRDS(final_params, "3_diversification_results/final_best_params.RDS")

@@ -19,12 +19,12 @@ mcc_phylo = read.tree("0_data/pruned_mcc_phylo.nwk")
 ### counting pruned phylognetic trees
 n_phylo = length(list.files("0_data/pruned_phylos"))
 
-### loading occurrence count per domain
-habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
-
 ### loading trait data
 trait_mtx = read.table("0_data/trait_matrix.csv", 
                        h=T, sep=",", na.strings = "na")
+
+### loading occurrence count per domain
+habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
 
 ############################### DATA PROCESSING ###############################
 

@@ -46,15 +46,13 @@ names(state_cols) = levels(habitat_range$range)
 
 ### trait values per species
 spp_traits = trait_mtx %>% 
-  mutate(seed_wei_mg = fruit_weight_mg/seed_number) %>% 
   group_by(species) %>% 
-  reframe(
-          plant_hei = median(plant_height_m, na.rm=T) ,
+  reframe(plant_hei = median(plant_height_m, na.rm=T) ,
           leaf_sla =  median(leaf_sla, na.rm=T) ,
           inflor_len = median(inflorescence_length_cm, na.rm=T),
           fruit_wei = median(fruit_weight_mg, na.rm=T) ,
           seed_num = median(seed_number, na.rm=T) ,
-          seed_wei = median(seed_wei_mg),
+          seed_wei = fruit_wei/seed_num,
           n = n()
   )
 ### setting regime df
