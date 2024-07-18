@@ -92,7 +92,7 @@ if (dir_check == FALSE){
 }
 
 ### loading ancetral state list
-anc_states_list = readRDS("1_habitat_results/anc_states_list.RDS")
+anc_state_list = readRDS("2_reconstruction_results/anc_state_list.RDS")
 
 ### setting regime df
 species = spp_traits$species

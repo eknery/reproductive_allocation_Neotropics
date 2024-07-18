@@ -12,12 +12,15 @@ mcc_phylo = read.tree("0_data/pruned_mcc_phylo.nwk")
 ### counting pruned phylognetic trees
 n_phylo = length(list.files("0_data/pruned_phylos"))
 
-### loading occurrence count per domain
-habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
-
 ### loading trait data
 trait_mtx = read.table("0_data/trait_matrix.csv", 
                        h=T, sep=",", na.strings = "na")
+
+### loading occurrence count per domain
+habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
+
+### ancestral reconstructions 
+anc_state_list = readRDS("2_reconstruction_results/anc_state_list.RDS")
 
 ############################### DATA PROCESSING ###############################
 
@@ -42,4 +45,25 @@ spp_traits = trait_mtx %>%
     n = n()
   )
 
-evolvcv.lite(sunfish.tree,sunfish.data[,2:3])
+### importing phylogenetic tree
+phylo_path = paste0("0_data/pruned_phylos/pruned_phylo_", as.character(1))
+phylo = read.tree(phylo_path)
+
+phylo$node.label = anc_state_list[[1]]
+
+test = evolvcv.lite(phylo, 
+                    X = spp_traits[,c("leaf_sla","seed_wei")])
+
+
+
+phylo$
+
+sunfish.tree$
+
+data(sunfish.tree)
+sunfish.tree
+
+data(sunfish.data)
+sunfish.data
+
+sunfish.tree
