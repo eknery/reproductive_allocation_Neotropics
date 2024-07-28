@@ -1,0 +1,28 @@
+{
+    "id": "74285A74",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1721665038498.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "id": "6d5f2db8f6ab4ee68914e9068526c142",
+        "name": "simmaps",
+        "title": "simmaps",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1721428480,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1721665038498,
+    "read_only": false,
+    "read_only_alternatives": []
+}
