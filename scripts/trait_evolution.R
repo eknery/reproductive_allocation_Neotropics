@@ -103,7 +103,7 @@ species = spp_traits$species
 regime = spp_states
 
 ## trait name
-trait_name = "sla"
+trait_name = "rel_inflor"
 ## trait values
 trait =  spp_traits[[trait_name]] 
 se = sd(trait) / sqrt(spp_traits[["n"]])
@@ -152,9 +152,9 @@ for (i in 1:n_phylo){
 }
 
 ### export path
-exp_path = paste0("2_trait_results/OUWIE/", trait_name)
+exp_path = paste0("3_trait_results/OUWIE/", trait_name)
 ### exporting model fit
 saveRDS(all_best_models, paste0(exp_path, "/all_best_models.RDS") )
 ### exporting best estimates list
 saveRDS(all_best_estimates, paste0(exp_path, "/all_best_estimates.RDS") )
-
+ 
