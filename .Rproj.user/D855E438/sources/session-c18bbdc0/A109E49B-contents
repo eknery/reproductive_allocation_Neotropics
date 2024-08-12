@@ -46,132 +46,22 @@ spp_traits = trait_mtx %>%
     n = n()
   )
 
-############################## RANGE RECONSTRUCTION ###########################
-
-### defining states
-spp_states = habitat_range$range
-names(spp_states) = habitat_range$species
-
-### my models
-models = list()
-
-models$er = matrix(c(0,1,1,
-                     1,0,1,
-                     1,1,0), 3, byrow = T)
-
-
-models$or_sym =  matrix(c(0,1,0,
-                          1,0,2,
-                          0,2,0), 3, byrow = T)
-
-models$or_asym  = matrix(c(0,1,0,
-                           2,0,3,
-                           0,4,0), 3, byrow = T)
-
-models$un_sym = matrix(c(0,1,2,
-                         1,0,3,
-                         2,3,0), 3, byrow = T)
-
-models$un_asym = matrix(c(0,1,2,
-                          3,0,4,
-                          5,6,0), 3, byrow = T)
-### parameter numbers
-k = c("er" = 1,
-      "or_sym" = 2, 
-      "or_asym" = 4,
-      "un_sym" = 3,
-      "un_asym" = 6
-)
-
-
-### model fit list
-model_fit = list()
-
-model_fit$er= geiger::fitDiscrete(phy = mcc_phylo , 
-                                  dat = spp_states,
-                                  model= models$er)
-
-model_fit$or_sym = geiger::fitDiscrete(phy = mcc_phylo , 
-                                       dat = spp_states,
-                                       model= models$or_sym)
-
-model_fit$or_asym = geiger::fitDiscrete(phy = mcc_phylo , 
-                                        dat = spp_states,
-                                        model= models$or_asym)
-
-model_fit$un_sym = geiger::fitDiscrete(phy = mcc_phylo , 
-                                       dat = spp_states,
-                                       model= models$un_sym)
-
-model_fit$un_asym = geiger::fitDiscrete(phy = mcc_phylo , 
-                                        dat = spp_states,
-                                        model= models$un_asym)
-
-### picking AICc scores
-aicc = c("er" = model_fit$er$opt$aicc, 
-         "or_sym" = model_fit$or_sym$opt$aicc,
-         "or_asym" = model_fit$or_asym$opt$aicc,
-         "un_sym" = model_fit$un_sym$opt$aicc,
-         "un_asym" = model_fit$un_asym$opt$aicc
-)
-
-### delta aicc
-daicc = sort(aicc  - min(aicc))
-
-### lowest daicc
-fir_model = names(daicc[1])
-sec_model = names(daicc[2])
-
-### choosing best transition model
-if (daicc[2] >= 2) {
-  best_model = fir_model
-} 
-if (daicc[2] < 2) {
-  if(k[fir_model] < k[sec_model]){
-    best_model = fir_model
-  }
-  if(k[fir_model] > k[sec_model]){
-    best_model = sec_model
-  }
-}
-
-### keep best model parameters
-trans_param = model_fit[[best_model]]$opt
-
-### infer simmaps
-simmaps = phytools::make.simmap(tree = mcc_phylo, 
-                                 x = spp_states, 
-                                 model= models[[best_model]],
-                                 pi = c(0.25,0.5,0.25),
-                                 nsim= 100
-)       
-
-##############################
+############################### FITTING CORRELATION ###########################
 
 ### choose traits
-t1 = "sla"
-t2 = "seed_mass"
-
-### checking normality
-shapiro.test( log(spp_traits[[t1]]) )
-shapiro.test( log(spp_traits[[t2]]) )
-
-############################### TESTING CORRELATION ###########################
-
-### choose traits
-t1 = "sla"
-t2 = "seed_mass"
+t1 = "seed_mass"
+t2 = "sla"
 
 ### checking normality
 shapiro.test( log(spp_traits[[t1]]) )
 shapiro.test( log(spp_traits[[t2]]) )
 
 ### ## final directory
-dir_name = paste0("3_trait_results/EVOLVCV/",t2)
+dir_name = paste0("3_trait_results/EVOLVCV/",t1)
 dir_check = dir.exists(dir_name)
 # create output dir if not created yet
 if (dir_check == FALSE){
-  dir.create(path= paste0("3_trait_results/EVOLVCV/",t2) )
+  dir.create(path= paste0("3_trait_results/EVOLVCV/",t1) )
 }
 
 ### trait matrix
@@ -239,32 +129,85 @@ saveRDS(aic_list, paste0(dir_name,"/aic_list.RDS") )
 saveRDS(best_model_list, paste0(dir_name,"/best_model_list.RDS") )
 saveRDS(best_rates_list, paste0(dir_name,"/best_rates_list.RDS") )
 
-
-################################## BEST MODEL ##################################
+################################## BEST MODELS #################################
 
 ### trait name
-t2 = "seed_mass"
+t1 = "seed_mass"
 
 ### directory name
-dir_name = paste0("3_trait_results/EVOLVCV/",t2)
+dir_name = paste0("3_trait_results/EVOLVCV/",t1)
 
 ### best model list and parameters
 best_model_list = readRDS(paste0(dir_name,"/best_model_list.RDS") )
 ### best model list and parameters
 best_rates_list = readRDS(paste0(dir_name,"/best_rates_list.RDS") )
 
-### pick most frequent model
-model_count = table(unlist(best_model_list))
-best_freq_model = names(model_count[max(model_count) == model_count])
+### name of most frequent models
+model_count = sort(table(unlist(best_model_list)), decreasing = T)
+fir_model_name = names(model_count[1])
+sec_model_name = names(model_count[2])
+
+### indexes of most frequent models
+best_model_names = unlist(best_model_list)
+fir_model_index = which(best_model_names == fir_model_name)
+sec_model_index = which(best_model_names == sec_model_name)
 
 ### picking correlation values
-cor_values = c()
-for (i in 1:length(best_rates_list)){
-  cor_mtx = cov2cor(best_rates_list[[i]])
-  cor_values = c(cor_values, cor_mtx[1,2])
+fir_cor_values = c()
+for (i in fir_model_index){
+  rates = best_rates_list[[i]]
+  cor_value = cov2cor(rates)[1,2]
+  fir_cor_values = c(fir_cor_values, cor_value)
 }
 
 ### describe 
-hist(cor_values)
-summary(cor_values)
+hist(fir_cor_values)
+summary(fir_cor_values)
+
+### pick correlation values
+sec_cor_values = list()
+loop = 1
+for (i in sec_model_index){
+  rates = best_rates_list[[i]]
+  cor_vec = c()
+  for (j in 1:length(rates)){
+    cor_value = cov2cor(rates[[j]])[1,2]
+    cor_vec = c(cor_vec, cor_value)
+  }
+  names(cor_vec) = names(best_rates_list[[i]])
+  sec_cor_values[[loop]] = cor_vec
+  loop = loop + 1
+}
+
+### transform to dataframe
+sec_cor_df = data.frame(matrix(unlist(sec_cor_values), 
+                  nrow=length(sec_cor_values), 
+                  byrow=TRUE
+                  )
+           
+           )
+## name columns
+colnames(sec_cor_df) = names(best_rates_list[[i]])
+
+### export 
+saveRDS(fir_cor_values, paste0(dir_name,"/fir_model_cor.RDS") )
+saveRDS(sec_cor_df, paste0(dir_name,"/sec_model_cor.RDS") )
+
+######################### ANALYZING BEST ESTIMATES #############################
+
+### trait name
+t1 = "seed_mass"
+
+### directory name
+dir_name = paste0("3_trait_results/EVOLVCV/",t1)
+
+### best model list and parameters
+fir_model_cor = readRDS(paste0(dir_name,"/fir_model_cor.RDS") )
+### best model list and parameters
+sec_model_cor = readRDS(paste0(dir_name,"/sec_model_cor.RDS") )
+
+
+ggplot(fir_model_cor) +
+  geom_histogram()
+
 
