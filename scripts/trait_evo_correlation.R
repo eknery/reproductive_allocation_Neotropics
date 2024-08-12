@@ -129,7 +129,6 @@ saveRDS(aic_list, paste0(dir_name,"/aic_list.RDS") )
 saveRDS(best_model_list, paste0(dir_name,"/best_model_list.RDS") )
 saveRDS(best_rates_list, paste0(dir_name,"/best_rates_list.RDS") )
 
-
 ################################## BEST MODELS #################################
 
 ### trait name
@@ -193,13 +192,3 @@ colnames(sec_cor_df) = names(best_rates_list[[i]])
 ### export 
 saveRDS(fir_cor_values, paste0(dir_name,"/fir_model_cor.RDS") )
 saveRDS(sec_cor_df, paste0(dir_name,"/sec_model_cor.RDS") )
-
-
-######################### ANALYZING BEST ESTIMATES #############################
-
-
-
-
-
-
-

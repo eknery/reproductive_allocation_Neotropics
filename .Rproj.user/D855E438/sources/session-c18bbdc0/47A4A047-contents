@@ -42,17 +42,11 @@ names(spp_states) = habitat_range$species
 spp_traits = trait_mtx %>% 
   mutate(
     seed_wei_mg = fruit_weight_mg/seed_number,
-    rel_inflor = 100*inflorescence_length_cm/(plant_height_m*100)
   ) %>% 
   group_by(species) %>% 
   reframe(
-    plant_hei = median(plant_height_m, na.rm=T) ,
     sla =  median(leaf_sla, na.rm=T),
-    inflor_len = median(inflorescence_length_cm, na.rm=T),
-    rel_inflor = median(rel_inflor, na.rm=T),
-    fruit_wei = median(fruit_weight_mg, na.rm=T) ,
-    seed_num = median(seed_number, na.rm=T) ,
-    seed_wei = median(seed_wei_mg),
+    seed_mass = median(seed_wei_mg),
     n = n()
   )
 

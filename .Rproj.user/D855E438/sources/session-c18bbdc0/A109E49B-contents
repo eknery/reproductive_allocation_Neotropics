@@ -192,22 +192,3 @@ colnames(sec_cor_df) = names(best_rates_list[[i]])
 ### export 
 saveRDS(fir_cor_values, paste0(dir_name,"/fir_model_cor.RDS") )
 saveRDS(sec_cor_df, paste0(dir_name,"/sec_model_cor.RDS") )
-
-######################### ANALYZING BEST ESTIMATES #############################
-
-### trait name
-t1 = "seed_mass"
-
-### directory name
-dir_name = paste0("3_trait_results/EVOLVCV/",t1)
-
-### best model list and parameters
-fir_model_cor = readRDS(paste0(dir_name,"/fir_model_cor.RDS") )
-### best model list and parameters
-sec_model_cor = readRDS(paste0(dir_name,"/sec_model_cor.RDS") )
-
-
-ggplot(fir_model_cor) +
-  geom_histogram()
-
-
