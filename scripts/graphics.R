@@ -63,15 +63,16 @@ regime = habitat_range$range
 trait_name = "seed_mass"
 ## trait values
 trait = spp_traits[[trait_name]]
+n = spp_traits[["n"]]
 se = spp_traits[[trait_name]] / sqrt(spp_traits[["n"]])
 
 ### species regime and traits
-sp_regime_trait = data.frame(species, regime, trait, se)
+sp_regime_trait = data.frame(species, regime, trait, n, se)
 
 ### describe
 sp_regime_trait %>% 
   group_by(regime) %>% 
-  reframe(mean(trait), sd(trait))
+  reframe(median(trait), IQR(trait))
 
 ### graphical param
 ## y axis name
@@ -137,67 +138,66 @@ dev.off()
 
 ############################### fitting SIMMAP #################################
 
-### my models
-my_models = list()
+### model fit list
+model_list = list()
 
-my_models$er = matrix(c(0,1,1,
-                        1,0,1,
-                        1,1,0), 3, byrow = T)
+model_list$er = matrix(c(0,1,1,
+                     1,0,1,
+                     1,1,0), 3, byrow = T)
 
-my_models$dir_sym =  matrix(c(0,1,0,
-                              1,0,2,
-                              0,2,0), 3, byrow = T)
 
-my_models$dir_asym  = matrix(c(0,1,0,
-                               2,0,3,
-                               0,4,0), 3, byrow = T)
+model_list$or_sym =  matrix(c(0,1,0,
+                          1,0,2,
+                          0,2,0), 3, byrow = T)
 
-my_models$nondir_sym = matrix(c(0,1,2,
-                                1,0,3,
-                                2,3,0), 3, byrow = T)
+model_list$or_asym  = matrix(c(0,1,0,
+                           2,0,3,
+                           0,4,0), 3, byrow = T)
 
-my_models$nondir_asym = matrix(c(0,1,2,
-                                 3,0,4,
-                                 5,6,0), 3, byrow = T)
+model_list$un_sym = matrix(c(0,1,2,
+                         1,0,3,
+                         2,3,0), 3, byrow = T)
 
+model_list$un_asym = matrix(c(0,1,2,
+                          3,0,4,
+                          5,6,0), 3, byrow = T)
 
 ### fit models
 er_fit = fitDiscrete(phy = mcc_phylo , 
                      dat = spp_states,
-                     model= my_models$er)
+                     model= model_list$er)
 
-dir_sym_fit = fitDiscrete(phy = mcc_phylo , 
+or_sym_fit = fitDiscrete(phy = mcc_phylo , 
                           dat = spp_states,
-                          model= my_models$dir_sym)
+                          model= model_list$or_sym)
 
-dir_asym_fit = fitDiscrete(phy = mcc_phylo , 
+or_asym_fit = fitDiscrete(phy = mcc_phylo , 
                            dat = spp_states,
-                           model= my_models$dir_asym)
+                           model= model_list$or_asym)
 
-nondir_sym_fit = fitDiscrete(phy = mcc_phylo , 
+un_sym_fit = fitDiscrete(phy = mcc_phylo , 
                       dat = spp_states,
-                      model= my_models$nondir_sym)
+                      model= model_list$un_sym)
 
-nondir_asym_fit = fitDiscrete(phy = mcc_phylo , 
+un_asym_fit = fitDiscrete(phy = mcc_phylo , 
                       dat = spp_states,
-                      model= my_models$nondir_asym)
+                      model= model_list$un_asym)
 
 ### picking AICc scores
 aicc = c("er" = er_fit$opt$aicc, 
-         "nondir_sym" = nondir_sym_fit$opt$aicc, 
-         "nondir_asym" = nondir_asym_fit$opt$aicc,
-         "dir_sym" = dir_sym_fit$opt$aicc, 
-         "dir_asym" = dir_asym_fit$opt$aicc 
+         "or_sym" = or_sym_fit$opt$aicc, 
+         "or_asym" = or_asym_fit$opt$aicc,
+         "un_sym" = un_sym_fit$opt$aicc, 
+         "un_asym" = un_asym_fit$opt$aicc 
 )
 
-### parameter numbers
-k = c(
- "er" = 1,
- "dir_sym" = 2, 
- "dir_asym" = 4,
- "nondir_sym" = 3,
- "nondir_asym" = 6
- )
+### number of parameters
+k = c("er" = 1,
+      "or_sym" = 2, 
+      "or_asym" = 4,
+      "un_sym" = 3,
+      "un_asym" = 6
+)
 
 ### delta aicc
 daicc = sort(aicc  - min(aicc))
@@ -222,7 +222,7 @@ if (daicc[2] < 2) {
 ### infer simmaps
 all_maps = phytools::make.simmap(tree = mcc_phylo, 
                                  x = spp_states, 
-                                 model = my_models[[best_model]],
+                                 model = model_list[[best_model]],
                                  pi = c(0.25,0.5,0.25),
                                  nsim = 100
                                  )

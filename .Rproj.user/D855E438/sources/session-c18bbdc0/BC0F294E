@@ -3,7 +3,7 @@
     "path": "C:/Users/eduar/OneDrive/Desktop/GitHub/resource_strategy_Neotropics/scripts/graphics.R",
     "project_path": "scripts/graphics.R",
     "type": "r_source",
-    "hash": "1655960125",
+    "hash": "922250973",
     "contents": "",
     "dirty": false,
     "created": 1723466523597.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "396,8",
-        "scrollLine": "394"
+        "cursorPosition": "75,0",
+        "scrollLine": "63"
     },
     "folds": "",
-    "lastKnownWriteTime": 1723469766,
+    "lastKnownWriteTime": 1723480979,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1723469766718,
+    "last_content_update": 1723480979057,
     "read_only": false,
     "read_only_alternatives": []
 }
