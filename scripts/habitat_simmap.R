@@ -148,16 +148,16 @@ for (i in 1:n_phylo){
 } 
 
 ### exporting q-values list
-saveRDS(param_list, "2_reconstruction_results/param_list.RDS")
+saveRDS(param_list, "2_reconstruction_results/simmap/param_list.RDS")
 ### exporting q-values list
-saveRDS(simmap_list, "2_reconstruction_results/simmap_list.RDS")
+saveRDS(simmap_list, "2_reconstruction_results/simmap/simmap_list.RDS")
 ### exporting ancetral state list
-saveRDS(anc_state_list, "2_reconstruction_results/anc_states_list.RDS")
+saveRDS(anc_state_list, "2_reconstruction_results/simmap/anc_states_list.RDS")
 
 ########################## comparing transition models ######################
 
 ### importing Q values
-param_list = readRDS("1_habitat_results/param_list.RDS")
+param_list = readRDS("2_reconstruction_results/simmap/param_list.RDS")
 
 ### from list to df
 param_df = data.frame( t( sapply(param_list,c) ) )
@@ -167,10 +167,10 @@ param_df$model = colnames(sapply(param_list,c))
 
 ### most common best fit
 tab_models = table(param_df$model)
-best_model= names(tab_models[tab_models == max(tab_models)])
+best_model = names(tab_models[tab_models == max(tab_models)])
 
 ### pick one paramenter
-param_name = "q23"
+param_name = "q12"
 param_vector = unlist(param_df[param_name])
 
 ### outlier boundaries
@@ -183,4 +183,6 @@ dw_bound = med - bound
 clean_param_vector = param_vector[param_vector < up_bound & param_vector > dw_bound]
 
 ### describe
-mean(clean_param_vector); sd(clean_param_vector)
+median(clean_param_vector); IQR(clean_param_vector)
+
+hist(clean_param_vector)
