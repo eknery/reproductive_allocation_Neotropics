@@ -50,39 +50,6 @@ spp_traits = trait_mtx %>%
     n = n()
   )
 
-################################## PGLS #########################################
-
-### choosing a trait
-trait = log(spp_traits$sla)
-names(trait) = spp_traits$species
-
-### fitting models
-fit_bm = fitContinuous(phy= mcc_phylo, dat = trait,  model="BM")
-fit_ou = fitContinuous(phy= mcc_phylo, dat = trait,  model="OU")
-
-### choosing model aicc
-if(fit_bm$opt$aicc < fit_ou$opt$aicc){
-  sigsq = fit_bm$opt$sigsq
-  cor_str = corBrownian(sigsq, phy = mcc_phylo, form= ~1)
-}
-if(fit_bm$opt$aicc > fit_ou$opt$aicc & (fit_bm$opt$aicc - fit_ou$opt$aicc) >= 2 ){
-  alpha = fit_ou$opt$alpha
-  cor_str = corMartins(alpha, phy = mcc_phylo, form= ~1)
-}
-
-### fitting pgls
-fit_gls = gls(trait ~ spp_states,
-              correlation= cor_str, 
-              method = "REML")
-
-summary(fit_gls)
-plot(fit_gls)
-
-### checking residuals
-res = resid(fit_gls)[1:nrow(spp_traits)]
-hist(res)
-shapiro.test(res)
-
 ##################################### OUWIE ####################################
 
 ### criando repositório para os testes OUWIE

@@ -254,6 +254,35 @@ tiff("4_graphics/simmap.tiff", units="cm", width=7, height=14, res=600)
   axisPhylo(pos=c(0.5), font=3, cex.axis=0.5)
 dev.off()
 
+############################### PHYLOMORPHOSPACE ###############################
+
+### choose traits
+t1 = "seed_mass"
+t2 = "sla"
+
+### vcv matrix
+X = as.matrix( log(spp_traits[,c(t1,t2)]) )
+rownames(X) = spp_traits$species
+
+tiff("4_graphics/phylomorpho.tiff", units="cm", width=14, height=13, res=600)
+  phylomorphospace(tree = all_maps[[100]],
+                   X = X,
+                   ftype="off",
+                   bty="n",
+                   xlab="ln seed mass",
+                   ylab="ln SLA",
+                   colors = state_cols,
+                   node.size=c(0,2),
+                   node.by.map=TRUE)
+  legend("topleft",
+         c("rainforest","generalist", "open-vegetation"),
+         pt.bg= state_cols,
+         pch=22,
+         pt.cex=1.5,
+         cex=0.8,
+         bty="n")
+dev.off()
+
 ############################### OUWIE ESTIMATES ################################
 
 ### choose a trait!

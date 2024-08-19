@@ -1,0 +1,256 @@
+if (!require("tidyverse")) install.packages("tidyverse"); library("tidyverse")
+if (!require("ggplot2")) install.packages("ggplot2"); library("ggplot2")
+if (!require("ape")) install.packages("ape"); library("ape")
+if (!require("geiger")) install.packages("geiger"); library("geiger")
+if (!require("phytools")) install.packages("phytools"); library("phytools")
+
+### my function
+source("scripts/function_calculate_aicc.R")
+
+############################### LOADING DATA #################################
+
+### loading phylogenetic tree
+mcc_phylo = read.tree("0_data/pruned_mcc_phylo.nwk")
+
+### counting pruned phylognetic trees
+n_phylo = length(list.files("0_data/pruned_phylos"))
+
+### loading trait data
+trait_mtx = read.table("0_data/trait_matrix.csv", 
+                       h=T, sep=",", na.strings = "na")
+
+### loading occurrence count per domain
+habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
+
+### loading reconstructions fro ancestral range
+simmap_list = readRDS("2_reconstruction_results/simmap/simmap_list.RDS")
+
+############################### DATA PROCESSING ###############################
+
+### node and tip numbers
+n_node = mcc_phylo$Nnode
+n_tip = Ntip(mcc_phylo)
+
+### sampled species
+sampled_sp = unique(trait_mtx$species)
+
+### defininf states
+spp_states = habitat_range$range
+names(spp_states) = habitat_range$species
+
+### trait values per species
+spp_traits = trait_mtx %>% 
+  mutate(
+    seed_wei_mg = fruit_weight_mg/seed_number,
+    ) %>% 
+  group_by(species) %>% 
+  reframe(
+    sla =  median(leaf_sla, na.rm=T),
+    seed_mass = median(seed_wei_mg),
+    n = n()
+  )
+
+############################## FITTING SIMPLE MODELS #########################
+
+### choose traits
+t1 = "seed_mass"
+trait = log(spp_traits[[t1]])
+names(trait) = spp_traits$species
+
+### checking normality
+shapiro.test( trait )
+
+### fit WN model
+wn_fit = fitContinuous(phy= mcc_phylo, dat= trait , model = "white")
+wn_aic = wn_fit$opt$aic
+
+### ## final directory
+dir_name = paste0("3_trait_results/BM/", t1)
+dir_check = dir.exists(dir_name)
+# create output dir if not created yet
+if (dir_check == FALSE){
+  dir.create(path= paste0(dir_name) )
+}
+
+### lsit of resutls
+bm_aic_list = list()
+bm_rates_list = list()
+
+for (i in 1:n_phylo){
+  ### importing phylogenetic tree
+  phylo_path = paste0("0_data/pruned_phylos/pruned_phylo_", as.character(i))
+  phylo = read.tree(phylo_path)
+  ### fit BM model
+  bm_fit = evolvcv.lite(tree = phylo,  
+                    X = X 
+                    )
+  ### picking aicc scores and estimates
+  bm_aic_list[[i]] = bm_fit$$aic
+  ### picking aicc scores and estimates
+  bm_rates_list[[i]] = bm_fit$opt$aic
+  ### check!
+  print(paste0("BM fit to map: ", i))
+}
+
+### export
+saveRDS(bm_aic_list, paste0(dir_name,"/bm_aic_list" ) )
+saveRDS(bm_rates_list, paste0(dir_name,"/bm_rates_list" ) )
+
+############################### FITTING VCV ##################################
+
+### choose traits
+t1 = "seed_mass"
+t2 = "sla"
+
+### checking normality
+shapiro.test( log(spp_traits[[t1]]) )
+shapiro.test( log(spp_traits[[t2]]) )
+
+### ## final directory
+dir_name = paste0("3_trait_results/EVOLVCV/",t1)
+dir_check = dir.exists(dir_name)
+# create output dir if not created yet
+if (dir_check == FALSE){
+  dir.create(path= paste0("3_trait_results/EVOLVCV/",t1) )
+}
+
+### vcv matrix
+X = as.matrix( log(spp_traits[,c(t1,t2)]) )
+rownames(X) = spp_traits$species
+
+### choose modelt to fit
+vcv_models = c("1","2","3", "3b", "3c", "4")
+
+### lists to keep model fit 
+vcv_aic_list = list()
+vcv_best_list = list()
+vcv_rates_list = list()
+
+for(i in 1:length(simmap_list) ){
+  ### pick one tree
+  one_simmap = simmap_list[[i]]
+  ### fit vcv matrices
+  vcv_fit = evolvcv.lite(
+    tree = one_simmap$tree[[100]], 
+    X = X,
+    models = vcv_models
+  )
+  ### get parameter number
+  k = c()
+  for (m in 1:length(vcv_models)){
+    k = c(k, vcv_fit[[m]]$k)
+  }
+  names(k) = vcv_models
+  ### get aic scores
+  aic_scores = c()
+  for (m in 1:length(vcv_models)){
+    aic_scores = c(aic_scores, vcv_fit[[m]]$AIC)
+  }
+  names(aic_scores) = vcv_models
+  ### keep aic scores
+  vcv_aic_list[[i]] = aic_scores
+  ### delta aic
+  daic = sort(unlist(aic_scores) - min(aic_scores, na.rm = T) )
+  ### lowest delta aicc
+  fir_model = names(daic[1])
+  sec_model = names(daic[2])
+  ### choosing best model
+  if (daic[2] >= 2) {
+    best_model = fir_model
+  } 
+  if (daic[2] < 2) {
+    if(k[fir_model] < k[sec_model]){
+      best_model = fir_model
+    }
+    if(k[fir_model] > k[sec_model]){
+      best_model = sec_model
+    }
+  }
+  ### keep best model and parameters
+  best_model_num = which(vcv_models == best_model)
+  vcv_best_list[[i]] = best_model
+  vcv_rates_list[[i]] = vcv_fit[[best_model_num]]$R
+  ### check
+  print(paste0("VCV fit to map: ", i))
+}
+
+### export
+saveRDS(vcv_aic_list, paste0(dir_name,"/vcv_aic_list.RDS") )
+saveRDS(vcv_best_list, paste0(dir_name,"/vcv_best_list.RDS") )
+saveRDS(vcv_rates_list, paste0(dir_name,"/vcv_rates_list.RDS") )
+
+################################## BEST MODELS #################################
+
+### trait name
+t1 = "seed_mass"
+
+### bm models
+dir_bm = paste0("3_trait_results/BM/",t1)
+# aic scores
+bm_aic_list = readRDS(paste0(dir_bm,"/bm_aic_list.RDS") )
+# best model list and parameters
+bm_rates_list = readRDS(paste0(dir_bm,"/bm_rates_list.RDS") )
+
+### vcv models
+dir_vcv= paste0("3_trait_results/EVOLVCV/",t1)
+# aic scores
+vcv_aic_list = readRDS(paste0(dir_vcv,"/vcv_aic_list.RDS") )
+# best model list and parameters
+vcv_best_list = readRDS(paste0(dir_vcv,"/vcv_best_list.RDS") )
+vcv_rates_list = readRDS(paste0(dir_vcv,"/vcv_rates_list.RDS") )
+
+### name of most frequent models
+model_count = sort(table(unlist(vcv_best_list)), decreasing = T)
+fir_model_name = names(model_count[1])
+sec_model_name = names(model_count[2])
+
+### indexes of most frequent models
+best_model_names = unlist(vcv_best_list)
+fir_model_index = which(best_model_names == fir_model_name)
+sec_model_index = which(best_model_names == sec_model_name)
+
+### picking correlation values
+fir_cor_values = c()
+for (i in fir_model_index){
+  rates = vcv_rates_list[[i]]
+  cor_value = cov2cor(rates)[1,2]
+  fir_cor_values = c(fir_cor_values, cor_value)
+}
+
+### describe 
+hist(fir_cor_values)
+summary(fir_cor_values)
+IQR(fir_cor_values)
+
+### pick correlation values
+sec_cor_values = list()
+loop = 1
+for (i in sec_model_index){
+  rates = vcv_rates_list[[i]]
+  cor_vec = c()
+  for (j in 1:length(rates)){
+    cor_value = cov2cor(rates[[j]])[1,2]
+    cor_vec = c(cor_vec, cor_value)
+  }
+  names(cor_vec) = names(vcv_rates_list[[i]])
+  sec_cor_values[[loop]] = cor_vec
+  loop = loop + 1
+}
+
+### transform to dataframe
+sec_cor_df = data.frame(matrix(unlist(sec_cor_values), 
+                  nrow=length(sec_cor_values), 
+                  byrow=TRUE
+                  )
+           
+           )
+## name columns
+colnames(sec_cor_df) = names(vcv_rates_list[[i]])
+
+### describe 
+apply(sec_cor_df, MARGIN = 2,  FUN = median)
+apply(sec_cor_df, MARGIN = 2,  FUN = IQR)
+
+### export 
+saveRDS(fir_cor_values, paste0(dir_name,"/fir_model_cor.RDS") )
+saveRDS(sec_cor_df, paste0(dir_name,"/sec_model_cor.RDS") )
