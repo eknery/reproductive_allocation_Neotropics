@@ -85,7 +85,7 @@ for (i in 1:n_phylo){
                     X = X 
                     )
   ### picking aicc scores and estimates
-  bm_aic_list[[i]] = bm_fit$$aic
+  bm_aic_list[[i]] = bm_fit$aic
   ### picking aicc scores and estimates
   bm_rates_list[[i]] = bm_fit$opt$aic
   ### check!
@@ -184,13 +184,6 @@ saveRDS(vcv_rates_list, paste0(dir_name,"/vcv_rates_list.RDS") )
 ### trait name
 t1 = "seed_mass"
 
-### bm models
-dir_bm = paste0("3_trait_results/BM/",t1)
-# aic scores
-bm_aic_list = readRDS(paste0(dir_bm,"/bm_aic_list.RDS") )
-# best model list and parameters
-bm_rates_list = readRDS(paste0(dir_bm,"/bm_rates_list.RDS") )
-
 ### vcv models
 dir_vcv= paste0("3_trait_results/EVOLVCV/",t1)
 # aic scores
@@ -222,35 +215,67 @@ hist(fir_cor_values)
 summary(fir_cor_values)
 IQR(fir_cor_values)
 
+### picking varaince values
+fir_var_values = c()
+for (i in fir_model_index){
+  rates = vcv_rates_list[[i]]
+  var_value = c(rates[1,1], rates[2,2])
+  fir_var_values = rbind(fir_var_values, var_value)
+}
+fir_var_values = as.data.frame(fir_var_values)
+colnames(fir_var_values) = c("seed_mass", "sla")
+
+### describe 
+summary(fir_var_values)
+IQR(fir_var_values[["seed_mass"]])
+IQR(fir_var_values[["sla"]])
+
+
 ### pick correlation values
-sec_cor_values = list()
-loop = 1
+sec_cor_values = c()
 for (i in sec_model_index){
   rates = vcv_rates_list[[i]]
   cor_vec = c()
   for (j in 1:length(rates)){
+    mtx_name = names(rates)[j]
     cor_value = cov2cor(rates[[j]])[1,2]
-    cor_vec = c(cor_vec, cor_value)
+    cor_vec = rbind(cor_vec, c(cor_value, mtx_name) )
   }
-  names(cor_vec) = names(vcv_rates_list[[i]])
-  sec_cor_values[[loop]] = cor_vec
-  loop = loop + 1
+  sec_cor_values = rbind(sec_cor_values, cor_vec)
 }
-
 ### transform to dataframe
-sec_cor_df = data.frame(matrix(unlist(sec_cor_values), 
-                  nrow=length(sec_cor_values), 
-                  byrow=TRUE
-                  )
-           
-           )
+sec_cor_df = as.data.frame(sec_cor_values)
 ## name columns
-colnames(sec_cor_df) = names(vcv_rates_list[[i]])
-
+colnames(sec_cor_df) = c("corr", "habitat_type")
 ### describe 
-apply(sec_cor_df, MARGIN = 2,  FUN = median)
-apply(sec_cor_df, MARGIN = 2,  FUN = IQR)
+sec_cor_df %>% 
+  mutate(corr = as.numeric(corr)) %>% 
+  group_by(habitat_type) %>% 
+  reframe(median(corr, na.rm=T), IQR(corr))
 
-### export 
-saveRDS(fir_cor_values, paste0(dir_name,"/fir_model_cor.RDS") )
-saveRDS(sec_cor_df, paste0(dir_name,"/sec_model_cor.RDS") )
+### pick correlation values
+sec_var_values = c()
+for (i in sec_model_index){
+  rates = vcv_rates_list[[i]]
+  var_vec = c()
+  for (j in 1:length(rates)){
+    mtx_name = names(rates)[j]
+    var_value = c(rates[[j]][1,1] , rates[[j]][2,2] )
+    var_vec = rbind(var_vec, c(var_value, mtx_name) )
+  }
+  sec_var_values = rbind(sec_var_values, var_vec)
+}
+sec_var_df = as.data.frame(sec_var_values)
+## name columns
+colnames(sec_var_df) = c("seed_mass", "sla", "habitat_type")
+### describe 
+sec_var_df %>% 
+  mutate(seed_mass = as.numeric(seed_mass),
+         sla = as.numeric(sla)
+         ) %>% 
+  group_by(habitat_type) %>% 
+  reframe(median(seed_mass, na.rm=T), 
+          IQR(seed_mass),
+          median(sla, na.rm=T), 
+          IQR(sla)
+          )
