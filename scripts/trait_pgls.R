@@ -39,52 +39,180 @@ spp_traits = trait_mtx %>%
     sla =  median(leaf_sla, na.rm=T),
     seed_mass = median(seed_wei_mg),
     n = n()
-  )
+  ) %>% 
+  left_join(habitat_range, by = "species")
 
-################################## PhylANOVA ###################################
+## state colors 
+state_cols = c("forestgreen", "brown","darkorange") 
+names(state_cols) = levels(habitat_range$range)
 
-### predictor
-pred = habitat_range$range
-names(pred) = habitat_range$species
-
-### response
-resp = spp_traits[["sla"]]
-names(resp) = spp_traits$species
-
-phylANOVA(tree = mcc_phylo,
-          x = pred,
-          y = resp)
-
-################################## PGLS #########################################
+################################## PGLS 1 ######################################
 
 ### choosing a trait
-trait_name = "seed_mass"
-trait = log(spp_traits[[trait_name]])
-names(trait) = spp_traits$species
+pred_name = "sla"
+pred = spp_traits[[pred_name]]
+names(pred) = spp_traits$species
+
+resp_name = "seed_mass"
+resp = log(spp_traits[[resp_name]])
+names(resp) = spp_traits$species
 
 ### fitting models
-fit_bm = fitContinuous(phy= mcc_phylo, dat = trait,  model="BM")
-fit_ou = fitContinuous(phy= mcc_phylo, dat = trait,  model="OU")
+fit_bm = fitContinuous(phy= mcc_phylo, dat = resp,  model="BM")
+fit_ou = fitContinuous(phy= mcc_phylo, dat = resp,  model="OU")
 
 ### choosing model aicc
 if(fit_bm$opt$aicc < fit_ou$opt$aicc){
   sigsq = fit_bm$opt$sigsq
   cor_str = corBrownian(sigsq, phy = mcc_phylo, form= ~1)
 }
-if(fit_bm$opt$aicc > fit_ou$opt$aicc & (fit_bm$opt$aicc - fit_ou$opt$aicc) >= 2 ){
+if(fit_bm$opt$aicc > fit_ou$opt$aicc &
+   (fit_bm$opt$aicc - fit_ou$opt$aicc) >= 2 ){
   alpha = fit_ou$opt$alpha
   cor_str = corMartins(alpha, phy = mcc_phylo, form= ~1)
 }
 
 ### fitting pgls
-fit_gls = gls(trait ~ spp_states,
+fit_gls1 = gls(resp ~ pred ,
               correlation= cor_str, 
               method = "REML")
 
-summary(fit_gls)
-plot(fit_gls)
+summary(fit_gls1)
+plot(fit_gls1)
 
 ### checking residuals
-res = resid(fit_gls)[1:nrow(spp_traits)]
-hist(res)
-shapiro.test(res)
+res1 = resid(fit_gls1)[1:nrow(spp_traits)]
+hist(res1)
+shapiro.test(res1)
+
+### getting coefficients
+intercept1 = fit_gls1$coefficients[["(Intercept)"]]
+slope1 = fit_gls1$coefficients[["pred"]]
+
+### plotting
+pgls1 = ggplot(data= spp_traits, 
+       aes(x= sla, 
+           y= log(seed_mass) ) 
+       ) +
+  
+  geom_point(size = 2, alpha = 0.25) + 
+  
+  geom_abline(intercept = intercept1, 
+              slope = slope1, 
+              color="black",  
+              size= 1,
+              linetype="dashed"
+              ) +
+  
+  xlab("SLA (mm2/mg)") + ylab("ln seed mass (mg)")+
+  
+  theme(panel.background=element_rect(fill="white"), 
+      panel.grid=element_line(colour=NULL),
+      panel.border=element_rect(fill=NA,colour="black"), 
+      axis.title=element_text(size=10,face="bold"), 
+      axis.text=element_text(size=8), 
+      legend.position = "none") 
+
+### exporting directory
+dir_out = "4_graphics/"
+tiff(paste0(dir_out,"pgls1", ".tiff"), 
+     units="cm", width=7.5, height=6.5, res=600)
+print(pgls1)
+dev.off()
+
+################################## PGLS 2 ######################################
+
+### choosing a trait
+pred_name = "sla"
+pred = spp_traits[[pred_name]]
+names(pred) = spp_traits$species
+
+resp_name = "seed_mass"
+resp = log(spp_traits[[resp_name]])
+names(resp) = spp_traits$species
+
+### fitting models
+fit_bm = fitContinuous(phy= mcc_phylo, dat = resp,  model="BM")
+fit_ou = fitContinuous(phy= mcc_phylo, dat = resp,  model="OU")
+
+### choosing model aicc
+if(fit_bm$opt$aicc < fit_ou$opt$aicc){
+  sigsq = fit_bm$opt$sigsq
+  cor_str = corBrownian(sigsq, phy = mcc_phylo, form= ~1)
+}
+if(fit_bm$opt$aicc > fit_ou$opt$aicc &
+   (fit_bm$opt$aicc - fit_ou$opt$aicc) >= 2 ){
+  alpha = fit_ou$opt$alpha
+  cor_str = corMartins(alpha, phy = mcc_phylo, form= ~1)
+}
+
+### fitting pgls
+fit_gls2 = gls(resp ~ pred/spp_states ,
+              correlation= cor_str, 
+              method = "REML")
+
+summary(fit_gls2)
+plot(fit_gls2)
+
+### checking residuals
+res2 = resid(fit_gls2)[1:nrow(spp_traits)]
+hist(res2)
+shapiro.test(res2)
+
+### getting coefficients
+intercept2 = fit_gls2$coefficients[["(Intercept)"]]
+slope2a = fit_gls2$coefficients[["pred"]]
+slope2b = fit_gls2$coefficients[["pred:spp_statesgeneralist"]]
+slope2c = fit_gls2$coefficients[["pred:spp_statesopen_specialist"]]
+
+### plotting
+ggplot(data= spp_traits, 
+       aes(x= sla, 
+           y= log(seed_mass) ) 
+) +
+  
+  geom_point(
+    aes(color = range),
+    size = 2, 
+    alpha = 0.5
+    ) + 
+  
+  scale_color_manual(
+    values=state_cols,
+    labels= c(
+      "rainforest",
+      "generalist",
+      "open-vegetation"
+      )
+    )+
+  
+  geom_abline(
+    intercept = intercept2, 
+    slope = slope2a, 
+    color="forestgreen" ,  
+    size= 1,
+    linetype="dashed"
+  ) +
+  
+  geom_abline(
+    intercept = intercept2, 
+    slope = slope2b, 
+    color="brown",  
+    size= 1,
+    linetype="dashed"
+  ) +
+  
+  geom_abline(
+    intercept = intercept2, 
+    slope = slope2c, 
+    color="darkorange",  
+    size= 1,
+    linetype="dashed"
+  ) +
+  
+  theme(panel.background=element_rect(fill="white"), 
+        panel.grid=element_line(colour=NULL),
+        panel.border=element_rect(fill=NA,colour="black"), 
+        axis.title=element_text(size=10,face="bold"), 
+        axis.text=element_text(size=8), 
+        legend.position = "none") 
