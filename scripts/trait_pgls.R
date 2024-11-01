@@ -49,11 +49,11 @@ names(state_cols) = levels(habitat_range$range)
 ################################## PGLS 1 ######################################
 
 ### choosing a trait
-pred_name = "sla"
+pred_name = "seed_mass"
 pred = spp_traits[[pred_name]]
 names(pred) = spp_traits$species
 
-resp_name = "seed_mass"
+resp_name = "sla"
 resp = log(spp_traits[[resp_name]])
 names(resp) = spp_traits$species
 
@@ -91,8 +91,9 @@ slope1 = fit_gls1$coefficients[["pred"]]
 
 ### plotting
 pgls1 = ggplot(data= spp_traits, 
-       aes(x= sla, 
-           y= log(seed_mass) ) 
+               aes(x= log(seed_mass), 
+                   y= sla 
+                   ) 
        ) +
   
   geom_point(size = 2, alpha = 0.25) + 
@@ -104,7 +105,7 @@ pgls1 = ggplot(data= spp_traits,
               linetype="dashed"
               ) +
   
-  xlab("SLA (mm2/mg)") + ylab("ln seed mass (mg)")+
+  xlab("seed mass (mg)") + ylab("ln SLA (mm2/mg)")+
   
   theme(panel.background=element_rect(fill="white"), 
       panel.grid=element_line(colour=NULL),
@@ -121,30 +122,6 @@ print(pgls1)
 dev.off()
 
 ################################## PGLS 2 ######################################
-
-### choosing a trait
-pred_name = "sla"
-pred = spp_traits[[pred_name]]
-names(pred) = spp_traits$species
-
-resp_name = "seed_mass"
-resp = log(spp_traits[[resp_name]])
-names(resp) = spp_traits$species
-
-### fitting models
-fit_bm = fitContinuous(phy= mcc_phylo, dat = resp,  model="BM")
-fit_ou = fitContinuous(phy= mcc_phylo, dat = resp,  model="OU")
-
-### choosing model aicc
-if(fit_bm$opt$aicc < fit_ou$opt$aicc){
-  sigsq = fit_bm$opt$sigsq
-  cor_str = corBrownian(sigsq, phy = mcc_phylo, form= ~1)
-}
-if(fit_bm$opt$aicc > fit_ou$opt$aicc &
-   (fit_bm$opt$aicc - fit_ou$opt$aicc) >= 2 ){
-  alpha = fit_ou$opt$alpha
-  cor_str = corMartins(alpha, phy = mcc_phylo, form= ~1)
-}
 
 ### fitting pgls
 fit_gls2 = gls(resp ~ pred/spp_states ,
@@ -166,15 +143,16 @@ slope2b = fit_gls2$coefficients[["pred:spp_statesgeneralist"]]
 slope2c = fit_gls2$coefficients[["pred:spp_statesopen_specialist"]]
 
 ### plotting
-ggplot(data= spp_traits, 
-       aes(x= sla, 
-           y= log(seed_mass) ) 
-) +
+pgls2 = ggplot(data= spp_traits, 
+              aes(x= seed_mass, 
+                  y= log(sla)
+                  ) 
+  ) +
   
   geom_point(
     aes(color = range),
     size = 2, 
-    alpha = 0.5
+    alpha = 0.25
     ) + 
   
   scale_color_manual(
@@ -207,8 +185,10 @@ ggplot(data= spp_traits,
     slope = slope2c, 
     color="darkorange",  
     size= 1,
-    linetype="dashed"
+    linetype="solid"
   ) +
+  
+  xlab("seed mass (mg)") + ylab("ln SLA (mm2/mg)")+
   
   theme(panel.background=element_rect(fill="white"), 
         panel.grid=element_line(colour=NULL),
@@ -216,3 +196,10 @@ ggplot(data= spp_traits,
         axis.title=element_text(size=10,face="bold"), 
         axis.text=element_text(size=8), 
         legend.position = "none") 
+
+### exporting directory
+dir_out = "4_graphics/"
+tiff(paste0(dir_out,"pgls2", ".tiff"), 
+     units="cm", width=7.5, height=6.5, res=600)
+print(pgls2)
+dev.off()
