@@ -91,8 +91,8 @@ slope1 = fit_gls1$coefficients[["pred"]]
 
 ### plotting
 pgls1 = ggplot(data= spp_traits, 
-               aes(x= log(seed_mass), 
-                   y= sla 
+               aes(x= seed_mass, 
+                   y= log(sla)
                    ) 
        ) +
   
@@ -124,9 +124,10 @@ dev.off()
 ################################## PGLS 2 ######################################
 
 ### fitting pgls
-fit_gls2 = gls(resp ~ pred/spp_states ,
-              correlation= cor_str, 
-              method = "REML")
+fit_gls2 = gls(resp ~ pred:spp_states ,
+               correlation= cor_str, 
+               method = "REML"
+              )
 
 summary(fit_gls2)
 plot(fit_gls2)
@@ -138,7 +139,7 @@ shapiro.test(res2)
 
 ### getting coefficients
 intercept2 = fit_gls2$coefficients[["(Intercept)"]]
-slope2a = fit_gls2$coefficients[["pred"]]
+slope2a = fit_gls2$coefficients[["pred:spp_statesforest_specialist"]]
 slope2b = fit_gls2$coefficients[["pred:spp_statesgeneralist"]]
 slope2c = fit_gls2$coefficients[["pred:spp_statesopen_specialist"]]
 
@@ -177,7 +178,7 @@ pgls2 = ggplot(data= spp_traits,
     slope = slope2b, 
     color="brown",  
     size= 1,
-    linetype="dashed"
+    linetype="solid"
   ) +
   
   geom_abline(
@@ -203,3 +204,4 @@ tiff(paste0(dir_out,"pgls2", ".tiff"),
      units="cm", width=7.5, height=6.5, res=600)
 print(pgls2)
 dev.off()
+

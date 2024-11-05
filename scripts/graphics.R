@@ -51,16 +51,22 @@ spp_traits = trait_mtx %>%
   group_by(species) %>% 
   reframe(
     sla =  median(leaf_sla, na.rm=T),
-    seed_mass = median(seed_wei_mg),
+    seed_mass = median(seed_wei_mg, na.rm=T),
+    plant_hei =  median(plant_height_m, na.rm=T),
+    leaf_len =  median(leaf_length_cm, na.rm=T),
+    inflor_len = median(inflorescence_length_cm, na.rm=T),
+    inflor_rel = 100*(inflor_len/(plant_hei*100)),
+    seed_num = median(seed_number, na.rm=T),
     n = n()
-  )
+  ) %>% 
+  left_join(habitat_range, by= "species")
 
 ### setting regime df
 species = spp_traits$species
 regime = habitat_range$range
 
 ## trait name
-trait_name = "seed_mass"
+trait_name = "seed_num"
 ## trait values
 trait = spp_traits[[trait_name]]
 n = spp_traits[["n"]]
@@ -85,27 +91,33 @@ if(trait_name == "sla"){
 if(trait_name == "inflor_len"){
   y_axis_name = "inflorescence length (cm)"
 }
+if(trait_name == "inflor_rel"){
+  y_axis_name = "rel inflorescence length (%)"
+}
+if(trait_name == "seed_num"){
+  y_axis_name = "seed number"
+}
 if(trait_name == "seed_mass"){
   y_axis_name = "seed mass (mg)"
 }
 
 ### trait plot
-trait_plot  = ggplot(data= sp_regime_trait, 
+trait_plot  = ggplot(data= sp_regime_trait,
          aes(x=regime,
-             y= trait, 
-             color = regime, 
+             y= trait,
+             color = regime,
              fill=regime)
          ) +
-    
+  
     geom_point(position = position_jitter(width = 0.10), 
                size = 1, 
                alpha = 0.75
                ) +
     
     geom_boxplot(weight = 0.5/length(unique(sp_regime_trait$regime)),
-                 linewidth = 0.3, 
+                 linewidth = 0.3,
                  color= "black",
-                 alpha = 0.50, 
+                 alpha = 0.50,
                  outlier.shape = NA
                  )+
     
@@ -134,6 +146,30 @@ tiff(file_name,
      units="cm", width=7, height= 6.5, res=600)
  print(trait_plot)
 dev.off()
+
+############################### supplementary #################################
+
+ggplot(data= spp_traits, 
+                     aes(x= seed_num,
+                         y= leaf_len,
+                         color= range
+                     )
+  ) +
+  
+  geom_point(size = 2, 
+             alpha = 0.25
+  ) +
+  
+  geom_smooth(method = "glm", se = F) +
+  
+  scale_colour_manual(values=state_cols)+
+  
+  theme(panel.background=element_rect(fill="white"), 
+        panel.grid=element_line(colour=NULL),
+        panel.border=element_rect(fill=NA,colour="black"),
+        axis.title=element_text(size=8,face="bold"),
+        axis.text=element_text(size=6),
+        legend.position = "none")
 
 
 ############################### fitting SIMMAP #################################
