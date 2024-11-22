@@ -64,12 +64,14 @@ fit_ou = fitContinuous(phy= mcc_phylo, dat = resp,  model="OU")
 ### choosing model aicc
 if(fit_bm$opt$aicc < fit_ou$opt$aicc){
   sigsq = fit_bm$opt$sigsq
-  cor_str = corBrownian(sigsq, phy = mcc_phylo, form= ~1)
+  spp = names(resp)
+  cor_str = corBrownian(sigsq, phy = mcc_phylo, form= ~spp)
 }
 if(fit_bm$opt$aicc > fit_ou$opt$aicc &
    (fit_bm$opt$aicc - fit_ou$opt$aicc) >= 2 ){
   alpha = fit_ou$opt$alpha
-  cor_str = corMartins(alpha, phy = mcc_phylo, form= ~1)
+  spp = names(resp)
+  cor_str = corMartins(alpha, phy = mcc_phylo, form= ~spp)
 }
 
 ### fitting pgls

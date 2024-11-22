@@ -28,25 +28,25 @@ n_node = mcc_phylo$Nnode
 models = list()
 
 models$er = matrix(c(0,1,1,
-                      1,0,1,
-                      1,1,0), 3, byrow = T)
+                     1,0,1,
+                     1,1,0), 3, byrow = T)
 
 
 models$or_sym =  matrix(c(0,1,0,
-                           1,0,2,
-                           0,2,0), 3, byrow = T)
+                          1,0,2,
+                          0,2,0), 3, byrow = T)
 
 models$or_asym  = matrix(c(0,1,0,
-                            2,0,3,
-                            0,4,0), 3, byrow = T)
+                           2,0,3,
+                           0,4,0), 3, byrow = T)
 
 models$un_sym = matrix(c(0,1,2,
-                             1,0,3,
-                             2,3,0), 3, byrow = T)
+                         1,0,3,
+                         2,3,0), 3, byrow = T)
 
 models$un_asym = matrix(c(0,1,2,
-                              3,0,4,
-                              5,6,0), 3, byrow = T)
+                          3,0,4,
+                          5,6,0), 3, byrow = T)
 ### parameter numbers
 k = c("er" = 1,
       "or_sym" = 2, 
