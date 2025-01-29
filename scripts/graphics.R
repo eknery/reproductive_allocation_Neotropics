@@ -52,11 +52,6 @@ spp_traits = trait_mtx %>%
   reframe(
     sla =  median(leaf_sla, na.rm=T),
     seed_mass = median(seed_wei_mg, na.rm=T),
-    plant_hei =  median(plant_height_m, na.rm=T),
-    leaf_len =  median(leaf_length_cm, na.rm=T),
-    inflor_len = median(inflorescence_length_cm, na.rm=T),
-    inflor_rel = 100*(inflor_len/(plant_hei*100)),
-    seed_num = median(seed_number, na.rm=T),
     n = n()
   ) %>% 
   left_join(habitat_range, by= "species")
@@ -82,20 +77,8 @@ sp_regime_trait %>%
 
 ### graphical param
 ## y axis name
-if(trait_name == "plant_hei"){
-  y_axis_name = "plant height (m)"
-}
 if(trait_name == "sla"){
   y_axis_name = "SLA (mm2/mg)"
-}
-if(trait_name == "inflor_len"){
-  y_axis_name = "inflorescence length (cm)"
-}
-if(trait_name == "inflor_rel"){
-  y_axis_name = "rel inflorescence length (%)"
-}
-if(trait_name == "seed_num"){
-  y_axis_name = "seed number"
 }
 if(trait_name == "seed_mass"){
   y_axis_name = "seed mass (mg)"
