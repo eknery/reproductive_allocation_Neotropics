@@ -21,6 +21,11 @@ mcc_phylo = read.tree("0_data/pruned_mcc_phylo.nwk")
 ### loading trait data
 trait_mtx = read.table("0_data/trait_matrix.csv", 
                        h=T, sep=",", na.strings = "na")
+
+### loading trait data
+flower_mtx = read.table("0_data/flower_trait_matrix.csv", 
+                       h=T, sep=",", na.strings = "na")
+
 ### importing habita range
 habitat_range = readRDS("1_habitat_results/habitat_range.RDS")
 
@@ -43,32 +48,58 @@ names(state_cols) = levels(habitat_range$range)
 
 ################################ trait data ####################################
 
+### flower size per species
+flower = flower_mtx %>% 
+  group_by(species) %>% 
+  reframe(
+    flower_size = median(style_height, na.rm=T)
+  )
+  
 ### trait values per species
 spp_traits = trait_mtx %>% 
   group_by(species) %>% 
   reframe(
-    plant_hei =  median(plant_height_m, na.rm=T),
+    plant_size =  median(plant_height_m, na.rm=T),
     inflor_size = median(inflorescence_length_cm, na.rm=T),
-    inflor_rel_size = 100*(inflor_size/(plant_hei*100)),
-    fruit_size =  median(fruit_length_mm, na.rm=T),
+    inflor_rel_size = 100*(inflor_size/(plant_size*100)),
+    fruit_size =  median(fruit_height_mm, na.rm=T),
     seed_num = median(seed_number, na.rm=T),
+    seed_size = median(seed_height_mm, na.rm=T),
+    seed_mass = median(fruit_weight_mg/seed_number, na.rm=T),
     n = n()
   ) %>% 
+  left_join(flower, by = "species") %>% 
   left_join(habitat_range, by = "species")
 
+########################### trait by range #########################
+
 ## choose a trait
-trait_name = "seed_num"
+trait_name = "fruit_size"
+
+### summary
+spp_traits %>% 
+  group_by(range) %>% 
+  reframe(x = mean(seed_size, na.rm = T),
+          stdv = sd(seed_size, na.rm = T))
+
+summary(aov(seed_mass ~ range, data = spp_traits))
 
 ### graphical param
 ## y axis name
 if(trait_name == "inflor_size"){
   y_axis_name = "Inflorescence size (cm)"
 }
+if(trait_name == "flower_size"){
+  y_axis_name = "Flower size (mm)"
+}
 if(trait_name == "fruit_size"){
-  y_axis_name = "fruit size (mm)"
+  y_axis_name = "ln Fruit size (mm)"
 }
 if(trait_name == "seed_num"){
   y_axis_name = "Number of seeds per fruit"
+}
+if(trait_name == "seed_size"){
+  y_axis_name = "Seed size (mm)"
 }
 
 ### plot
@@ -115,5 +146,60 @@ file_name = paste0("4_graphics/",trait_name, ".tiff")
 tiff(file_name, 
      units="cm", width=7, height= 6.5, res=600)
 print(trait_plot)
+dev.off()
+
+######################## correlation plots #######################
+
+### choose a trait
+trait_name = "plant_size"
+
+### lm test
+summary(lm(log(seed_mass) ~ plant_size, data = spp_traits))
+
+### graphical param
+## y axis name
+if(trait_name == "plant_size"){
+  x_axis_name = "Plant size (m)"
+}
+if(trait_name == "inflor_size"){
+  x_axis_name = "Inflorescence size (cm)"
+}
+if(trait_name == "flower_size"){
+  x_axis_name = "Flower size (mm)"
+}
+if(trait_name == "fruit_size"){
+  x_axis_name = "ln Fruit size (mm)"
+}
+if(trait_name == "seed_num"){
+  x_axis_name = "Number of seeds per fruit"
+}
+if(trait_name == "seed_size"){
+  x_axis_name = "Seed size (mm)"
+}
+
+### plot
+corr_plot = ggplot(data= spp_traits) +
+  geom_point(aes(x= spp_traits[[trait_name]],
+                 y= log(seed_mass)
+                 ),
+             color = "darkgray",
+             size = 2, 
+             alpha = 0.75
+  ) +
+  xlab(x_axis_name)+ ylab("ln seed mass (mg)")+
+  
+  theme(panel.background=element_rect(fill="white"), 
+      panel.grid=element_line(colour=NULL),
+      panel.border=element_rect(fill=NA,colour="black"),
+      axis.title=element_text(size=8,face="bold"),
+      axis.text=element_text(size=6),
+      legend.position = "none")
+
+## file name
+file_name = paste0("4_graphics/corr_",trait_name, ".tiff")
+### plotting 
+tiff(file_name, 
+     units="cm", width=7, height= 6.5, res=600)
+print(corr_plot)
 dev.off()
 

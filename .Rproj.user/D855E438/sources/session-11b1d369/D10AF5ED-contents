@@ -61,9 +61,9 @@ species = spp_traits$species
 regime = habitat_range$range
 
 ## trait name
-trait_name = "seed_num"
+trait_name = "sla"
 ## trait values
-trait = spp_traits[[trait_name]]
+trait = log(spp_traits[[trait_name]] )
 n = spp_traits[["n"]]
 se = spp_traits[[trait_name]] / sqrt(spp_traits[["n"]])
 
@@ -78,10 +78,10 @@ sp_regime_trait %>%
 ### graphical param
 ## y axis name
 if(trait_name == "sla"){
-  y_axis_name = "SLA (mm2/mg)"
+  y_axis_name = "ln SLA (mm2/mg)"
 }
 if(trait_name == "seed_mass"){
-  y_axis_name = "seed mass (mg)"
+  y_axis_name = "ln seed mass (mg)"
 }
 
 ### trait plot
