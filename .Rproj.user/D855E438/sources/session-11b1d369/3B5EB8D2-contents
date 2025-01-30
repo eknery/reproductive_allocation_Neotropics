@@ -74,15 +74,15 @@ spp_traits = trait_mtx %>%
 ########################### trait by range #########################
 
 ## choose a trait
-trait_name = "plant_size"
+trait_name = "fruit_size"
 
 ### summary
 spp_traits %>% 
   group_by(range) %>% 
-  reframe(x = mean(seed_size, na.rm = T),
-          stdv = sd(seed_size, na.rm = T))
+  reframe(x = mean(fruit_size, na.rm = T),
+          stdv = sd(fruit_size, na.rm = T))
 
-summary(aov(plant_size ~ range, data = spp_traits))
+summary(aov(fruit_size ~ range, data = spp_traits))
 
 ### graphical param
 ## y axis name
@@ -96,7 +96,7 @@ if(trait_name == "flower_size"){
   y_axis_name = "Flower size (mm)"
 }
 if(trait_name == "fruit_size"){
-  y_axis_name = "ln Fruit size (mm)"
+  y_axis_name = "Fruit size (mm)"
 }
 if(trait_name == "seed_num"){
   y_axis_name = "Number of seeds per fruit"
@@ -157,7 +157,7 @@ dev.off()
 trait_name = "plant_size"
 
 ### lm test
-summary(lm(log(seed_mass) ~ plant_size, data = spp_traits))
+summary(lm(seed_mass ~ fruit_size, data = spp_traits))
 
 ### graphical param
 ## y axis name
@@ -171,7 +171,7 @@ if(trait_name == "flower_size"){
   x_axis_name = "Flower size (mm)"
 }
 if(trait_name == "fruit_size"){
-  x_axis_name = "ln Fruit size (mm)"
+  x_axis_name = "Fruit size (mm)"
 }
 if(trait_name == "seed_num"){
   x_axis_name = "Number of seeds per fruit"
@@ -181,16 +181,23 @@ if(trait_name == "seed_size"){
 }
 
 ### plot
-corr_plot = ggplot(data= spp_traits) +
-  geom_point(aes(x= spp_traits[[trait_name]],
-                 y= log(seed_mass)
-                 ),
-             color = "darkgray",
+corr_plot = ggplot(data= spp_traits,
+                   aes(x= spp_traits[["plant_size"]],
+                       y= spp_traits[["inflor_size"]]),
+                   )+
+                     
+  geom_point(aes(color = range),
              size = 2, 
              alpha = 0.75
   ) +
-  xlab(x_axis_name)+ ylab("ln seed mass (mg)")+
   
+  #geom_smooth(method = "lm", colour= "black" ,se = FALSE) +
+
+  xlab("Plant size (m)")+ ylab("Inflorescence size (mm)")+
+  
+  scale_fill_manual(values=state_cols)+
+  scale_colour_manual(values=state_cols)+
+
   theme(panel.background=element_rect(fill="white"), 
       panel.grid=element_line(colour=NULL),
       panel.border=element_rect(fill=NA,colour="black"),
