@@ -93,8 +93,8 @@ slope1 = fit_gls1$coefficients[["pred"]]
 
 ### plotting
 pgls1 = ggplot(data= spp_traits, 
-               aes(x= seed_mass, 
-                   y= log(sla)
+               aes(x= spp_traits[[pred_name]], 
+                   y= log(spp_traits[[resp_name]])
                    ) 
        ) +
   
@@ -147,8 +147,8 @@ slope2c = fit_gls2$coefficients[["pred:spp_statesopen_specialist"]]
 
 ### plotting
 pgls2 = ggplot(data= spp_traits, 
-              aes(x= seed_mass, 
-                  y= log(sla)
+              aes(x= spp_traits[[pred_name]], 
+                  y= log(spp_traits[[resp_name]])
                   ) 
   ) +
   

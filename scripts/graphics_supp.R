@@ -71,7 +71,7 @@ spp_traits = trait_mtx %>%
   left_join(flower, by = "species") %>% 
   left_join(habitat_range, by = "species")
 
-########################### trait by range #########################
+########################## species trait by range #########################
 
 ## choose a trait
 trait_name = "fruit_size"
@@ -151,48 +151,83 @@ tiff(file_name,
 print(trait_plot)
 dev.off()
 
-######################## correlation plots #######################
+######################## specimen correlation plots #######################
 
+### traits per sample
+samp_traits = trait_mtx %>% 
+  reframe(
+    species = species,
+    plant_size =  plant_height_m,
+    inflor_size = inflorescence_length_cm,
+    fruit_size =  fruit_height_mm,
+    seed_num = seed_number,
+    seed_mass = fruit_weight_mg/seed_number,
+  ) %>% 
+  drop_na() %>% 
+  left_join(habitat_range, by = "species")
+ 
 ### choose a trait
-trait_name = "fruit_size"
+pred_name = "inflor_size"
+resp_name = "seed_mass"
 
 ### lm test
-summary(lm(seed_mass ~ fruit_size, data = spp_traits))
+summary(lm(log(samp_traits[[resp_name]]) ~ samp_traits[[pred_name]]))
 
 ### graphical param
-## y axis name
-if(trait_name == "plant_size"){
+## x axis name
+if(pred_name == "plant_size"){
   x_axis_name = "Plant size (m)"
 }
-if(trait_name == "inflor_size"){
+if(pred_name == "inflor_size"){
   x_axis_name = "Inflorescence size (cm)"
 }
-if(trait_name == "flower_size"){
+if(pred_name == "flower_size"){
   x_axis_name = "Flower size (mm)"
 }
-if(trait_name == "fruit_size"){
+if(pred_name == "fruit_size"){
   x_axis_name = "Fruit size (mm)"
 }
-if(trait_name == "seed_num"){
+if(pred_name == "seed_num"){
   x_axis_name = "Number of seeds per fruit"
 }
-if(trait_name == "seed_size"){
-  x_axis_name = "Seed size (mm)"
+if(pred_name == "seed_mass"){
+  x_axis_name = "Seed mass (mg)"
+}
+
+## y axis name
+if(resp_name == "plant_size"){
+  y_axis_name = "Plant size (m)"
+}
+if(resp_name == "inflor_size"){
+  y_axis_name = "Inflorescence size (cm)"
+}
+if(resp_name == "flower_size"){
+  y_axis_name = "Flower size (mm)"
+}
+if(resp_name == "fruit_size"){
+  y_axis_name = "Fruit size (mm)"
+}
+if(resp_name == "seed_num"){
+  y_axis_name = "Number of seeds per fruit"
+}
+if(resp_name == "seed_mass"){
+  y_axis_name = "Seed mass (mg)"
 }
 
 ### plot
 corr_plot = ggplot(data= spp_traits,
-                   aes(x= spp_traits[[trait_name]],
-                       y= spp_traits[["seed_size"]]),
+                   aes(x= spp_traits[[pred_name]],
+                       y= log(spp_traits[[resp_name]]) ),
                    )+
                      
   geom_point(aes(color = range),
              size = 2, 
              alpha = 0.75
   ) +
-  geom_smooth(method = "lm", colour= "black" ,se = FALSE) +
-
-  xlab(x_axis_name)+ ylab("Seed mass (mg)")+
+  
+  #geom_smooth(method= "lm" , se = F, color = "black")+
+  
+  xlab(x_axis_name)+ ylab(y_axis_name)+
   
   scale_fill_manual(values=state_cols)+
   scale_colour_manual(values=state_cols)+
@@ -205,7 +240,7 @@ corr_plot = ggplot(data= spp_traits,
       legend.position = "none")
 
 ## file name
-file_name = paste0("4_graphics/corr_",trait_name, ".tiff")
+file_name = paste0("4_graphics/corr_",resp_name,"_",pred_name, ".tiff")
 ### plotting 
 tiff(file_name, 
      units="cm", width=7, height= 6.5, res=600)
