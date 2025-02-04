@@ -3,9 +3,9 @@
     "path": "C:/Users/eduar/OneDrive/Desktop/GitHub/reproductive_allocation_Neotropics/scripts/graphics_supp.R",
     "project_path": "scripts/graphics_supp.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "528799665",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1732928783971.0,
     "source_on_save": false,
     "relative_order": 2,
@@ -17,11 +17,11 @@
         "scrollLine": "167"
     },
     "folds": "",
-    "lastKnownWriteTime": 1738625124,
+    "lastKnownWriteTime": 1738639312,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1738626104868,
+    "last_content_update": 1738639312428,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -167,7 +167,7 @@ samp_traits = trait_mtx %>%
   left_join(habitat_range, by = "species")
  
 ### choose a trait
-pred_name = "inflor_size"
+pred_name = "fruit_size"
 resp_name = "seed_mass"
 
 ### lm test
@@ -217,7 +217,7 @@ if(resp_name == "seed_mass"){
 ### plot
 corr_plot = ggplot(data= spp_traits,
                    aes(x= spp_traits[[pred_name]],
-                       y= log(spp_traits[[resp_name]]) ),
+                       y= spp_traits[[resp_name]]) ,
                    )+
                      
   geom_point(aes(color = range),
