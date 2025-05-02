@@ -72,7 +72,7 @@ if (dir_check == FALSE){
   dir.create(path= paste0(dir_name) )
 }
 
-### lsit of resutls
+### list of resutls
 bm_aic_list = list()
 bm_rates_list = list()
 
@@ -96,7 +96,7 @@ for (i in 1:n_phylo){
 saveRDS(bm_aic_list, paste0(dir_name,"/bm_aic_list" ) )
 saveRDS(bm_rates_list, paste0(dir_name,"/bm_rates_list" ) )
 
-############################### FITTING VCV ##################################
+############################### FITTING R matrix ##################################
 
 ### choose traits
 t1 = "seed_mass"
@@ -119,36 +119,36 @@ X = as.matrix( log(spp_traits[,c(t1,t2)]) )
 rownames(X) = spp_traits$species
 
 ### choose modelt to fit
-vcv_models = c("1","2","3", "3b", "3c", "4")
+r_models = c("1","2","3", "3b", "3c", "4")
 
 ### lists to keep model fit 
-vcv_aic_list = list()
-vcv_best_list = list()
-vcv_rates_list = list()
+r_aic_list = list()
+r_best_list = list()
+r_rates_list = list()
 
 for(i in 1:length(simmap_list) ){
   ### pick one tree
   one_simmap = simmap_list[[i]]
   ### fit vcv matrices
-  vcv_fit = evolvcv.lite(
+  r_fit = evolvcv.lite(
     tree = one_simmap$tree[[100]], 
     X = X,
-    models = vcv_models
+    models = r_models
   )
   ### get parameter number
   k = c()
-  for (m in 1:length(vcv_models)){
-    k = c(k, vcv_fit[[m]]$k)
+  for (m in 1:length(r_models)){
+    k = c(k, r_fit[[m]]$k)
   }
-  names(k) = vcv_models
+  names(k) = r_models
   ### get aic scores
   aic_scores = c()
-  for (m in 1:length(vcv_models)){
-    aic_scores = c(aic_scores, vcv_fit[[m]]$AIC)
+  for (m in 1:length(r_models)){
+    aic_scores = c(aic_scores, r_fit[[m]]$AIC)
   }
-  names(aic_scores) = vcv_models
+  names(aic_scores) = r_models
   ### keep aic scores
-  vcv_aic_list[[i]] = aic_scores
+  r_aic_list[[i]] = aic_scores
   ### delta aic
   daic = sort(unlist(aic_scores) - min(aic_scores, na.rm = T) )
   ### lowest delta aicc
@@ -167,17 +167,17 @@ for(i in 1:length(simmap_list) ){
     }
   }
   ### keep best model and parameters
-  best_model_num = which(vcv_models == best_model)
-  vcv_best_list[[i]] = best_model
-  vcv_rates_list[[i]] = vcv_fit[[best_model_num]]$R
+  best_model_num = which(r_models == best_model)
+  r_best_list[[i]] = best_model
+  r_rates_list[[i]] = r_fit[[best_model_num]]$R
   ### check
   print(paste0("VCV fit to map: ", i))
 }
 
 ### export
-saveRDS(vcv_aic_list, paste0(dir_name,"/vcv_aic_list.RDS") )
-saveRDS(vcv_best_list, paste0(dir_name,"/vcv_best_list.RDS") )
-saveRDS(vcv_rates_list, paste0(dir_name,"/vcv_rates_list.RDS") )
+saveRDS(r_aic_list, paste0(dir_name,"/r_aic_list.RDS") )
+saveRDS(r_best_list, paste0(dir_name,"/r_best_list.RDS") )
+saveRDS(r_rates_list, paste0(dir_name,"/r_rates_list.RDS") )
 
 ################################## BEST MODELS #################################
 
@@ -187,25 +187,25 @@ t1 = "seed_mass"
 ### vcv models
 dir_vcv= paste0("3_trait_results/EVOLVCV/",t1)
 # aic scores
-vcv_aic_list = readRDS(paste0(dir_vcv,"/vcv_aic_list.RDS") )
+r_aic_list = readRDS(paste0(dir_vcv,"/r_aic_list.RDS") )
 # best model list and parameters
-vcv_best_list = readRDS(paste0(dir_vcv,"/vcv_best_list.RDS") )
-vcv_rates_list = readRDS(paste0(dir_vcv,"/vcv_rates_list.RDS") )
+r_best_list = readRDS(paste0(dir_vcv,"/r_best_list.RDS") )
+r_rates_list = readRDS(paste0(dir_vcv,"/r_rates_list.RDS") )
 
 ### name of most frequent models
-model_count = sort(table(unlist(vcv_best_list)), decreasing = T)
+model_count = sort(table(unlist(r_best_list)), decreasing = T)
 fir_model_name = names(model_count[1])
 sec_model_name = names(model_count[2])
 
 ### indexes of most frequent models
-best_model_names = unlist(vcv_best_list)
+best_model_names = unlist(r_best_list)
 fir_model_index = which(best_model_names == fir_model_name)
 sec_model_index = which(best_model_names == sec_model_name)
 
 ### picking correlation values
 fir_cor_values = c()
 for (i in fir_model_index){
-  rates = vcv_rates_list[[i]]
+  rates = r_rates_list[[i]]
   cor_value = cov2cor(rates)[1,2]
   fir_cor_values = c(fir_cor_values, cor_value)
 }
@@ -218,7 +218,7 @@ IQR(fir_cor_values)
 ### picking varaince values
 fir_var_values = c()
 for (i in fir_model_index){
-  rates = vcv_rates_list[[i]]
+  rates = r_rates_list[[i]]
   var_value = c(rates[1,1], rates[2,2])
   fir_var_values = rbind(fir_var_values, var_value)
 }
@@ -234,7 +234,7 @@ IQR(fir_var_values[["sla"]])
 ### pick correlation values
 sec_cor_values = c()
 for (i in sec_model_index){
-  rates = vcv_rates_list[[i]]
+  rates = r_rates_list[[i]]
   cor_vec = c()
   for (j in 1:length(rates)){
     mtx_name = names(rates)[j]
@@ -256,7 +256,7 @@ sec_cor_df %>%
 ### pick correlation values
 sec_var_values = c()
 for (i in sec_model_index){
-  rates = vcv_rates_list[[i]]
+  rates = r_rates_list[[i]]
   var_vec = c()
   for (j in 1:length(rates)){
     mtx_name = names(rates)[j]
