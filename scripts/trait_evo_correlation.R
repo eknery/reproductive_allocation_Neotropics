@@ -107,14 +107,14 @@ shapiro.test( log(spp_traits[[t1]]) )
 shapiro.test( log(spp_traits[[t2]]) )
 
 ### ## final directory
-dir_name = paste0("3_trait_results/EVOLVCV/",t1)
+dir_name = paste0("3_trait_results/RMTX/",t1)
 dir_check = dir.exists(dir_name)
 # create output dir if not created yet
 if (dir_check == FALSE){
-  dir.create(path= paste0("3_trait_results/EVOLVCV/",t1) )
+  dir.create(path= paste0("3_trait_results/RMTX/",t1) )
 }
 
-### vcv matrix
+### R matrix
 X = as.matrix( log(spp_traits[,c(t1,t2)]) )
 rownames(X) = spp_traits$species
 
@@ -129,7 +129,7 @@ r_rates_list = list()
 for(i in 1:length(simmap_list) ){
   ### pick one tree
   one_simmap = simmap_list[[i]]
-  ### fit vcv matrices
+  ### fit R matrices
   r_fit = evolvcv.lite(
     tree = one_simmap$tree[[100]], 
     X = X,
@@ -171,7 +171,7 @@ for(i in 1:length(simmap_list) ){
   r_best_list[[i]] = best_model
   r_rates_list[[i]] = r_fit[[best_model_num]]$R
   ### check
-  print(paste0("VCV fit to map: ", i))
+  print(paste0("R fit to map: ", i))
 }
 
 ### export
@@ -184,13 +184,13 @@ saveRDS(r_rates_list, paste0(dir_name,"/r_rates_list.RDS") )
 ### trait name
 t1 = "seed_mass"
 
-### vcv models
-dir_vcv= paste0("3_trait_results/EVOLVCV/",t1)
+### R models
+dir_R= paste0("3_trait_results/RMTX/",t1)
 # aic scores
-r_aic_list = readRDS(paste0(dir_vcv,"/r_aic_list.RDS") )
+r_aic_list = readRDS(paste0(dir_R,"/r_aic_list.RDS") )
 # best model list and parameters
-r_best_list = readRDS(paste0(dir_vcv,"/r_best_list.RDS") )
-r_rates_list = readRDS(paste0(dir_vcv,"/r_rates_list.RDS") )
+r_best_list = readRDS(paste0(dir_R,"/r_best_list.RDS") )
+r_rates_list = readRDS(paste0(dir_R,"/r_rates_list.RDS") )
 
 ### name of most frequent models
 model_count = sort(table(unlist(r_best_list)), decreasing = T)
