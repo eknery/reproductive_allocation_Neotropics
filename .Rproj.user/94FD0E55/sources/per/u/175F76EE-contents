@@ -1,0 +1,2 @@
+spp_traits$species[spp_traits$seed_mass < 1 & spp_traits$sla > 12]
+                  
